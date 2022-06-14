@@ -1,11 +1,15 @@
 import express from "express";
+import mainRoute from "./routes/index-route";
 
 const app = express();
 const port = 3000;
 
-app.get("/", (req: express.Request, res: express.Response) => {
-    res.send("in main route");
-});
+app.use(express.json()) // for parsing application/json
+//app.use(express.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
+
+
+app.use('/', mainRoute);
+
 
 console.log("Hello World!");
 

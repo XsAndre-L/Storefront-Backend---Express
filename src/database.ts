@@ -22,7 +22,7 @@ if(ENV === "dev"){
         password: POSTGRES_PASSWORD
     }) 
 
-}else if(ENV === "test"){
+}else {
     database = new Pool({
         host: POSTGRES_HOST,
         database: POSTGRES_DB_TEST,
@@ -30,3 +30,5 @@ if(ENV === "dev"){
         password: POSTGRES_PASSWORD
     }) 
 }
+
+export default database;
