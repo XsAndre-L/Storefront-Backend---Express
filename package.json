@@ -29,6 +29,7 @@
     "@typescript-eslint/eslint-plugin": "^5.28.0",
     "@typescript-eslint/parser": "^5.28.0",
     "db-migrate": "^0.11.13",
+    "db-migrate-pg": "^1.2.2",
     "eslint": "^8.17.0",
     "eslint-config-prettier": "^8.5.0",
     "nodemon": "^2.0.16",
