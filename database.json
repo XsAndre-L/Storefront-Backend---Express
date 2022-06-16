@@ -13,7 +13,7 @@
         "port": "54320",
         "database": "storefront_db_test",
         "user": "postgres",
-        "password": ""
+        "password": "root"
     }
 
 }

@@ -1,15 +1,26 @@
 import express from "express";
 
-const usersRoute = express.Router();
+const signupRoute = express.Router();
 
-usersRoute
-    .route("/")
+signupRoute
+    .route("/signup")
     .get((_req: express.Request, res: express.Response) => {
         // INDEX
-        res.send("User Index");
+        res.send("in signup");
     })
     .post((_req: express.Request, res: express.Response) => {
         // Create new
     });
 
-export default usersRoute;
+const loginRoute = express.Router();
+
+loginRoute
+    .route("/login")
+    .get((_req: express.Request, res: express.Response) => {
+        res.send("Login Page");
+    })
+    .post((_req: express.Request, res: express.Response) => {
+        res.send("Authenticate User");
+    });
+
+export default signupRoute;

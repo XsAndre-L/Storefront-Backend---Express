@@ -2,7 +2,6 @@ import database from "../database";
 
 export type Order = {
     id?: number;
-    
 };
 
 export class OrderStore {
