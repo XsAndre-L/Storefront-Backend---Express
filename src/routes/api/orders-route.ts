@@ -1,11 +1,15 @@
 import express from "express";
+import { OrderStore } from "../../models/order-model";
 
 const ordersRoute = express.Router();
+
+const orderStore = new OrderStore();
 
 ordersRoute
     .route("/")
     .get((_req: express.Request, res: express.Response) => {
-        res.send("Show all orders");
+        //const orders = orderStore.showActiveOrders(_req.params.user_id)
+        res.send("show user orders");
         // See all orders
     })
     .post((_req: express.Request, res: express.Response) => {

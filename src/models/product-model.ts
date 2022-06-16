@@ -14,7 +14,7 @@ export class ProductStore {
         try {
             const conn = await database.connect();
             const sql = "SELECT * FROM products_table";
-            let result= await conn.query(sql);
+            const result = await conn.query(sql);
             conn.release();
 
             return result.rows;
@@ -33,9 +33,9 @@ export class ProductStore {
             const sql = "SELECT * FROM products_table WHERE id=$1";
 
             let result: QueryResult<any>;
-            if(id.startsWith(':')){
+            if (id.startsWith(':')) {
                 result = await conn.query(sql, [id.substring(1)]);
-            }else{
+            } else {
                 result = await conn.query(sql, [id]);
             }
 
@@ -67,11 +67,11 @@ export class ProductStore {
         try {
             const conn = await database.connect();
             const sql = "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4";
-            
+
             let result: QueryResult<any>;
-            if(id.startsWith(':')){
+            if (id.startsWith(':')) {
                 result = await conn.query(sql, [updatedProduct.name, updatedProduct.price, updatedProduct.category, id.substring(1)]);
-            }else{
+            } else {
                 result = await conn.query(sql, [updatedProduct.name, updatedProduct.price, updatedProduct.category, id]);
             }
             conn.release();
@@ -89,12 +89,12 @@ export class ProductStore {
             const sql = "DELETE FROM products_table WHERE id=$1";
 
             let result: QueryResult<any>;
-            if(id.startsWith(':')){
+            if (id.startsWith(':')) {
                 result = await conn.query(sql, [id.substring(1)]);
-            }else{
+            } else {
                 result = await conn.query(sql, [id]);
             }
-            
+
             conn.release();
 
             return result.rows[0];
