@@ -18,11 +18,8 @@ export class ProductStore {
             conn.release();
 
             return result.rows;
-
         } catch (error) {
-
             throw new Error(`Error when while getting all products!`);
-
         }
     }
 
@@ -33,7 +30,7 @@ export class ProductStore {
             const sql = "SELECT * FROM products_table WHERE id=$1";
 
             let result: QueryResult<any>;
-            if (id.startsWith(':')) {
+            if (id.startsWith(":")) {
                 result = await conn.query(sql, [id.substring(1)]);
             } else {
                 result = await conn.query(sql, [id]);
@@ -42,9 +39,8 @@ export class ProductStore {
             conn.release();
 
             return result.rows[0];
-
         } catch (error) {
-            throw new Error(`Error when trying to retrieve Item of id : ${id}`)
+            throw new Error(`Error when trying to retrieve Item of id : ${id}`);
         }
     }
 
@@ -52,13 +48,20 @@ export class ProductStore {
         // Post
         try {
             const conn = await database.connect();
-            const sql = "INSERT INTO products_table (name,price,category) VALUES($1,$2,$3)";
-            const result = await conn.query(sql, [newProduct.name, newProduct.price, newProduct.category]);
+            const sql =
+                "INSERT INTO products_table (name,price,category) VALUES($1,$2,$3)";
+            const result = await conn.query(sql, [
+                newProduct.name,
+                newProduct.price,
+                newProduct.category,
+            ]);
             conn.release();
 
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Error while Creating product : ${newProduct.name}`);
+            throw new Error(
+                `Error while Creating product : ${newProduct.name}`
+            );
         }
     }
 
@@ -66,13 +69,24 @@ export class ProductStore {
         // put
         try {
             const conn = await database.connect();
-            const sql = "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4";
+            const sql =
+                "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4";
 
             let result: QueryResult<any>;
-            if (id.startsWith(':')) {
-                result = await conn.query(sql, [updatedProduct.name, updatedProduct.price, updatedProduct.category, id.substring(1)]);
+            if (id.startsWith(":")) {
+                result = await conn.query(sql, [
+                    updatedProduct.name,
+                    updatedProduct.price,
+                    updatedProduct.category,
+                    id.substring(1),
+                ]);
             } else {
-                result = await conn.query(sql, [updatedProduct.name, updatedProduct.price, updatedProduct.category, id]);
+                result = await conn.query(sql, [
+                    updatedProduct.name,
+                    updatedProduct.price,
+                    updatedProduct.category,
+                    id,
+                ]);
             }
             conn.release();
 
@@ -89,7 +103,7 @@ export class ProductStore {
             const sql = "DELETE FROM products_table WHERE id=$1";
 
             let result: QueryResult<any>;
-            if (id.startsWith(':')) {
+            if (id.startsWith(":")) {
                 result = await conn.query(sql, [id.substring(1)]);
             } else {
                 result = await conn.query(sql, [id]);
@@ -98,7 +112,6 @@ export class ProductStore {
             conn.release();
 
             return result.rows[0];
-
         } catch (error) {
             throw new Error(`Error while Deleting product with id : ${id}`);
         }
