@@ -7,51 +7,68 @@ const productStore = new ProductStore();
 
 productsRoute
     .route("/")
-    .get(async (_req: express.Request, res: express.Response) => {
-        // GET PRODUCT INDEX
+    .get(async (_req: express.Request, res: express.Response) => {      // GET PRODUCT INDEX
+
         const productList: Product[] = await productStore.index();
         res.status(200).json(productList);
     })
-    .post(async (_req: express.Request, res: express.Response) => {
-        // CREATE PRODUCT
+    .post(async (_req: express.Request, res: express.Response) => {     // CREATE PRODUCT
+
         const product: Product = {
             name: _req.body.name,
             price: _req.body.price,
             category: _req.body.category,
         };
-        const newProduct: Product = await productStore.create(product);
 
-        res.status(200).json(newProduct);
+        try {
+            const newProduct: Product = await productStore.create(product);
+            res.status(200).json(newProduct);
+
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     });
 
 productsRoute
     .route("/:id")
-    .get(async (_req: express.Request, res: express.Response) => {
-        // SHOW PRODUCT
+    .get(async (_req: express.Request, res: express.Response) => {      // SHOW PRODUCT
 
-        const product: Product = await productStore.show(_req.params.id); // need to get id from url
-        // Show specific product
-        // res.send(`show product ${_req.params.id}`);
-        res.status(200).json(product);
+        try {
+            const product: Product = await productStore.show(_req.params.id); // need to get id from url
+            res.status(200).json(product);
+
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     })
-    .put(async (_req: express.Request, res: express.Response) => {
-        // UPDATE PRODUCT
+    .put(async (_req: express.Request, res: express.Response) => {      // UPDATE PRODUCT
+
         const pInfo: Product = {
             name: _req.body.name,
             price: _req.body.price,
             category: _req.body.category,
         };
-        const product: Product = await productStore.update(
-            _req.params.id,
-            pInfo
-        );
 
-        res.status(200).json(product);
+        try {
+            const product: Product = await productStore.update(
+                _req.params.id,
+                pInfo
+            );
+            res.status(200).json(product);
+
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     })
-    .delete(async (_req: express.Request, res: express.Response) => {
-        const product: Product = await productStore.delete(_req.params.id);
+    .delete(async (_req: express.Request, res: express.Response) => {   // DELETE PRODUCT
 
-        res.status(200).json(product);
+        try {
+            const product: Product = await productStore.delete(_req.params.id);
+            res.status(200).json(product);
+
+        } catch (error: any) {
+            res.status(500).send(error.message);
+        }
     });
 
 export default productsRoute;

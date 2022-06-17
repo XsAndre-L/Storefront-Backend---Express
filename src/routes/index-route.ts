@@ -12,7 +12,6 @@ mainRoute.route("/").get((req: express.Request, res: express.Response) => {
 
 mainRoute.use("/order", ordersRoute);
 mainRoute.use("/product", productsRoute);
-
 mainRoute.use("/users", usersRoute);
 
 mainRoute.get("*", (req: express.Request, res: express.Response) => {

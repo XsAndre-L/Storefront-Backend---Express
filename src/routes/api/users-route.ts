@@ -5,10 +5,10 @@ const userStore = new UserStore();
 
 const userRoute = express.Router();
 
-
 userRoute
     .route("/") // Authenticated user routes
-    .get(async (_req: express.Request, res: express.Response) => {  // User Details
+    .get(async (_req: express.Request, res: express.Response) => {
+        // User Details
 
         try {
             const result = await userStore.getUserDetails(
@@ -19,7 +19,8 @@ userRoute
             res.status(500).send(error.message);
         }
     })
-    .put(async (_req: express.Request, res: express.Response) => {  // Update User Details
+    .put(async (_req: express.Request, res: express.Response) => {
+        // Update User Details
 
         const user: User = {
             id: _req.body.id,
@@ -39,7 +40,6 @@ userRoute
 userRoute
     .route("/signup")
     .post(async (_req: express.Request, res: express.Response) => {
-
         const newUser: User = {
             firstName: _req.body.firstName,
             lastName: _req.body.lastName,
@@ -57,16 +57,15 @@ userRoute
 userRoute
     .route("/login")
     .post(async (_req: express.Request, res: express.Response) => {
-        try {
-            const userDetails: User = {
-                firstName: _req.body.firstName,
-                lastName: _req.body.lastName,
-                password: _req.body.password,
-            };
+        const userDetails: User = {
+            firstName: _req.body.firstName,
+            lastName: _req.body.lastName,
+            password: _req.body.password,
+        };
 
+        try {
             const result = await userStore.authenticate(userDetails);
             res.status(200).send(result);
-
         } catch (error: any) {
             res.status(500).send(error.message);
         }

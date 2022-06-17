@@ -1,5 +1,4 @@
-import database from "../database";
-import { QueryResult } from "pg";
+import { dbConnection } from "../database";
 
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -24,16 +23,11 @@ export type User = {
 export class UserStore {
     async getUserDetails(auth: string): Promise<User> {
         try {
-            console.log(auth);
-            jwt.verify(auth, String(JWT_SIGN_TOKEN));
+            const decoded = jwt.verify(auth, String(JWT_SIGN_TOKEN));
 
-            const decoded = jwt.decode(auth, { json: true })!;
-            // console.log(JSON.parse(String(dec)));
-            console.log(decoded);
-
-            const result = await this.dbConnection(
+            const result = await dbConnection(
                 "SELECT * FROM users_table WHERE id=$1",
-                [String(decoded.id)]
+                [Object.values(decoded)[0]] // gets the id
             );
 
             return result.rows[0];
@@ -46,10 +40,10 @@ export class UserStore {
         try {
             // First try to authenticate user too see if the account does not exist
             const auth = await this.authenticate(newUser);
-            console.log('auth - ' + auth);
+            console.log("auth - " + auth);
 
             if (auth != null) {
-                return "USER ALREADY EXISTS"
+                return "USER ALREADY EXISTS";
             }
 
             const hash = bcrypt.hashSync(
@@ -57,7 +51,7 @@ export class UserStore {
                 parseInt(String(HASH_ROUNDS))
             );
 
-            const result = await this.dbConnection(
+            const result = await dbConnection(
                 "INSERT INTO users_table (firstName, lastName, password) VALUES($1,$2,$3) RETURNING id",
                 [newUser.firstName, newUser.lastName, hash]
             );
@@ -71,7 +65,6 @@ export class UserStore {
             };
 
             const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN));
-            console.log(token);
 
             return token;
         } catch (error: any) {
@@ -83,7 +76,7 @@ export class UserStore {
 
     async authenticate(userDetails: User): Promise<string | null> {
         try {
-            const result = await this.dbConnection(
+            const result = await dbConnection(
                 "SELECT * FROM users_table WHERE firstName=$1 AND lastName=$2",
                 [userDetails.firstName, userDetails.lastName]
             );
@@ -101,16 +94,13 @@ export class UserStore {
             );
 
             if (success) {
-
                 const token = jwt.sign(authUser, String(JWT_SIGN_TOKEN));
-                console.log('USER EXISTS');
+                console.log("USER EXISTS");
                 console.log(token);
                 return token;
             } else {
                 return null;
             }
-
-
         } catch (error) {
             throw new Error(
                 `Error while authenticating new user. | CODE : ${error}`
@@ -121,7 +111,7 @@ export class UserStore {
     async updateUserDetails(userDetails: User): Promise<User | null> {
         try {
             console.log("Updating Details");
-            const result = await this.dbConnection(
+            const result = await dbConnection(
                 "UPDATE users_table SET firstName=$1, lastName=$2 WHERE id=$3",
                 [userDetails.firstName, userDetails.lastName, userDetails.id]
             );
@@ -133,16 +123,5 @@ export class UserStore {
                 `Could not update user details | code: ${error.message}`
             );
         }
-    }
-
-    async dbConnection(
-        sql: string,
-        sqlInput: any[]
-    ): Promise<QueryResult<any>> {
-        const conn = await database.connect();
-        const result = await conn.query(sql, sqlInput);
-        conn.release();
-
-        return result;
     }
 }

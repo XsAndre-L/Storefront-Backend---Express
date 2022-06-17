@@ -1,5 +1,5 @@
 import dotenv from "dotenv";
-import { Pool } from "pg";
+import { Pool, QueryResult } from "pg";
 
 dotenv.config();
 
@@ -32,6 +32,18 @@ if (ENV === "dev") {
         user: POSTGRES_USER,
         password: POSTGRES_PASSWORD,
     });
+}
+
+// Function to connect, query and disconnect from Database
+export const dbConnection = async (
+    sql: string,
+    sqlInput: any[]
+): Promise<QueryResult<any>> => {
+    const conn = await database.connect();
+    const result = await conn.query(sql, sqlInput);
+    conn.release();
+
+    return result;
 }
 
 export default database;
