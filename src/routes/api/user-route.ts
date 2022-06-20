@@ -7,7 +7,7 @@ const userRoute = express.Router();
 
 userRoute
     .route("/") // Authenticated user routes
-    .get(async (_req: express.Request, res: express.Response) => {
+    .get(async (_req: express.Request, res: express.Response): Promise<void> => {
         // User Details
 
         try {
@@ -19,7 +19,7 @@ userRoute
             res.status(500).send(error.message);
         }
     })
-    .put(async (_req: express.Request, res: express.Response) => {
+    .put(async (_req: express.Request, res: express.Response): Promise<void> => {
         // Update User Details
 
         const user: User = {
@@ -39,7 +39,7 @@ userRoute
 
 userRoute
     .route("/signup")
-    .post(async (_req: express.Request, res: express.Response) => {
+    .post(async (_req: express.Request, res: express.Response): Promise<void> => {
         const newUser: User = {
             firstName: _req.body.firstName,
             lastName: _req.body.lastName,
@@ -56,7 +56,7 @@ userRoute
 
 userRoute
     .route("/login")
-    .post(async (_req: express.Request, res: express.Response) => {
+    .post(async (_req: express.Request, res: express.Response): Promise<void> => {
         const userDetails: User = {
             firstName: _req.body.firstName,
             lastName: _req.body.lastName,

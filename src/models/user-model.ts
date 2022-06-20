@@ -1,4 +1,4 @@
-import { dbConnection } from "../database";
+import { dbConnection, verifyUser } from "../database";
 
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -23,7 +23,7 @@ export type User = {
 export class UserStore {
     async getUserDetails(auth: string): Promise<User> {
         try {
-            const decoded = jwt.verify(auth, String(JWT_SIGN_TOKEN));
+            const decoded = verifyUser(auth);//jwt.verify(auth, String(JWT_SIGN_TOKEN));
 
             const result = await dbConnection(
                 "SELECT * FROM users_table WHERE id=$1",
@@ -39,10 +39,10 @@ export class UserStore {
     async createAccount(newUser: User): Promise<string> {
         try {
             // First try to authenticate user too see if the account does not exist
-            const auth = await this.authenticate(newUser);
-            console.log("auth - " + auth);
+            const currAuth = await this.authenticate(newUser);
+            console.log("auth - " + currAuth);
 
-            if (auth != null) {
+            if (currAuth != null) {
                 return "USER ALREADY EXISTS";
             }
 
@@ -64,9 +64,9 @@ export class UserStore {
                 password: hash,
             };
 
-            const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN));
+            const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN))//verifyUser(jwtUser);
 
-            return token;
+            return String(token);
         } catch (error: any) {
             throw new Error(
                 `Could not create the new user | CODE : ${error.message}`
@@ -85,19 +85,19 @@ export class UserStore {
                 return null;
             }
 
-            const authUser: User = result.rows[0];
-            console.dir(authUser);
+            const auth: User = result.rows[0];
+            console.dir(auth);
 
             const success = bcrypt.compareSync(
                 userDetails.password + BCRYPT_PASSWORD,
-                authUser.password
+                auth.password
             );
 
             if (success) {
-                const token = jwt.sign(authUser, String(JWT_SIGN_TOKEN));
+                const token = jwt.sign(auth, String(JWT_SIGN_TOKEN));
                 console.log("USER EXISTS");
                 console.log(token);
-                return token;
+                return String(token);
             } else {
                 return null;
             }

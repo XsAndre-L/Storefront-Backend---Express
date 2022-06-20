@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+import jwt from 'jsonwebtoken';
 import { Pool, QueryResult } from "pg";
 
 dotenv.config();
@@ -12,6 +13,8 @@ const {
     POSTGRES_PASSWORD,
 
     ENV,
+
+    JWT_SIGN_TOKEN
 } = process.env;
 
 let database: Pool;
@@ -45,5 +48,17 @@ export const dbConnection = async (
 
     return result;
 };
+
+export const verifyUser = (auth: string | null): string | jwt.JwtPayload => {
+    try {
+
+        const verification = jwt.verify(auth!, String(JWT_SIGN_TOKEN));
+        return verification;
+
+    } catch (error: any) {
+        console.log("User not logged in...");
+        throw new Error(`Authentication Error`);
+    }
+}
 
 export default database;

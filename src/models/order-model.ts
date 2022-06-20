@@ -1,12 +1,6 @@
-import { dbConnection } from "../database";
-import { OrderInfo, OrderInfoStore } from "./order-info-model";
+import { dbConnection, verifyUser } from "../database";
+import { OrderInfo, OrderInfoStore } from "./cart-model";
 
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-
-dotenv.config();
-
-const { JWT_SIGN_TOKEN } = process.env;
 
 export type Order = {
     id?: number;
@@ -18,14 +12,8 @@ export class OrderStore {
     orderInfoStore = new OrderInfoStore();
 
     async showActiveOrders(auth: string): Promise<Order[]> {
-        // Show
         try {
-            const decode = jwt.verify(auth, String(JWT_SIGN_TOKEN));
-
-
-            // console.dir(JSON.parse(String(decode)).id);
-            //console.log()
-            //const test = jwt.decode(auth, { json: true })!;
+            const decode = verifyUser(auth);
 
             const result = await dbConnection(
                 "SELECT * FROM orders_table WHERE user_id=$1",
@@ -51,9 +39,25 @@ export class OrderStore {
         }
     }
 
-    async getOrderDetails(order_id: number): Promise<OrderInfo[]> {
+    async getPendingOrder(auth: string): Promise<number> {
         try {
-            const result = this.orderInfoStore.getOrder(order_id);
+            const jwtDecoded = verifyUser(auth);//jwt.verify(auth, String(JWT_SIGN_TOKEN));
+
+            const result = await dbConnection(
+                "SELECT * FROM orders_table WHERE user_id=$1 AND status=$2",
+                [Object.values(jwtDecoded)[0], "pending"]
+            )
+
+            return result.rows[0].id;
+
+        } catch (error: any) {
+            throw new Error(`Could not retrieve the pending order on user`);
+        }
+    }
+
+    async getOrder(auth: string, order_id: number): Promise<OrderInfo[]> { // Single Order including all products
+        try {
+            const result = this.orderInfoStore.getOrderProducts(auth, order_id);
             return result;
         } catch (error: any) {
             throw new Error(`Error while trying to retrieve order details`);
@@ -64,7 +68,8 @@ export class OrderStore {
         // Should not be place because order should exist while stil Pending in cart
         // Create
         try {
-            const decoded = jwt.verify(auth, String(JWT_SIGN_TOKEN));
+            const decoded = verifyUser(auth);
+
             const result = await dbConnection(
                 "INSERT INTO orders_table (user_id, status) VALUES($1,$2)",
                 [Object.values(decoded)[0], "Active"]
@@ -75,9 +80,11 @@ export class OrderStore {
         }
     }
 
-    async updateOrder(order_id: number, status: string): Promise<Order> {
+    async updateOrder(auth: string, order_id: number, status: string): Promise<Order> {
         // Update
         try {
+            verifyUser(auth);
+
             const result = await dbConnection(
                 "UPDATE orders_table SET status=$1 WHERE id=$2",
                 [order_id, status]
@@ -88,14 +95,14 @@ export class OrderStore {
         }
     }
 
-    async cancelOrder(order_id: number): Promise<Order> {
+    async cancelOrder(auth: string, order_id: number): Promise<Order> {
         // Delete
         try {
             const result = await dbConnection(
                 "DELETE FROM orders_table WHERE id=$1",
                 [order_id]
             );
-            this.orderInfoStore.cancelOrder(order_id);
+            this.orderInfoStore.cancelOrder(auth, order_id);
             return result.rows[0];
         } catch (error) {
             throw new Error(`Error while canceling order`);

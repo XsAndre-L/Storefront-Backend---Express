@@ -7,13 +7,13 @@ const productStore = new ProductStore();
 
 productsRoute
     .route("/")
-    .get(async (_req: express.Request, res: express.Response) => {
+    .get(async (_req: express.Request, res: express.Response): Promise<void> => {
         // GET PRODUCT INDEX
 
         const productList: Product[] = await productStore.index();
         res.status(200).json(productList);
     })
-    .post(async (_req: express.Request, res: express.Response) => {
+    .post(async (_req: express.Request, res: express.Response): Promise<void> => {
         // CREATE PRODUCT
 
         const product: Product = {
@@ -32,7 +32,7 @@ productsRoute
 
 productsRoute
     .route("/:id")
-    .get(async (_req: express.Request, res: express.Response) => {
+    .get(async (_req: express.Request, res: express.Response): Promise<void> => {
         // SHOW PRODUCT
 
         try {
@@ -42,7 +42,7 @@ productsRoute
             res.status(500).send(error.message);
         }
     })
-    .put(async (_req: express.Request, res: express.Response) => {
+    .put(async (_req: express.Request, res: express.Response): Promise<void> => {
         // UPDATE PRODUCT
 
         const pInfo: Product = {
@@ -61,7 +61,7 @@ productsRoute
             res.status(500).send(error.message);
         }
     })
-    .delete(async (_req: express.Request, res: express.Response) => {
+    .delete(async (_req: express.Request, res: express.Response): Promise<void> => {
         // DELETE PRODUCT
 
         try {
