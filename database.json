@@ -9,11 +9,10 @@
     },
     "test": {
         "driver": "pg",
-        "host": "host.docker.internal:49153",
+        "host": "127.0.0.1",
         "port": "54320",
         "database": "storefront_db_test",
         "user": "postgres",
         "password": "root"
     }
-
 }

@@ -14,3 +14,5 @@ console.log("Hello World!");
 app.listen(port, () => {
     console.log(`Started server on port: ${port}`);
 });
+
+export default app;

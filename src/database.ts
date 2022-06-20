@@ -19,7 +19,7 @@ let database: Pool;
 if (ENV === "dev") {
     database = new Pool({
         host: POSTGRES_HOST,
-        port: parseInt(POSTGRES_PORT!),
+        port: parseInt(String(POSTGRES_PORT)),
         database: POSTGRES_DB,
         user: POSTGRES_USER,
         password: POSTGRES_PASSWORD,
@@ -27,7 +27,7 @@ if (ENV === "dev") {
 } else {
     database = new Pool({
         host: POSTGRES_HOST,
-        port: parseInt(POSTGRES_PORT!),
+        port: parseInt(String(POSTGRES_PORT)),
         database: POSTGRES_DB_TEST,
         user: POSTGRES_USER,
         password: POSTGRES_PASSWORD,
@@ -44,6 +44,6 @@ export const dbConnection = async (
     conn.release();
 
     return result;
-}
+};
 
 export default database;
