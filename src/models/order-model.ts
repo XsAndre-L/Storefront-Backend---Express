@@ -39,24 +39,25 @@ export class OrderStore {
         }
     }
 
-    async getPendingOrder(auth: string): Promise<number> {
+    async createOrder(auth: string): Promise<Order> {
+        // Should not be place because order should exist while stil Pending in cart
+        // Create
         try {
-            const jwtDecoded = verifyUser(auth);//jwt.verify(auth, String(JWT_SIGN_TOKEN));
+            const decoded = verifyUser(auth);
 
             const result = await dbConnection(
-                "SELECT * FROM orders_table WHERE user_id=$1 AND status=$2",
-                [Object.values(jwtDecoded)[0], "pending"]
-            )
-
-            return result.rows[0].id;
-
+                "INSERT INTO orders_table (user_id, order_status) VALUES($1,$2)",
+                [Object.values(decoded)[0], "Pending"]
+            );
+            return result.rows[0];
         } catch (error: any) {
-            throw new Error(`Could not retrieve the pending order on user`);
+            throw new Error(`Error while placing order for user | CODE : ${error.message}`);
         }
     }
 
     async getOrder(auth: string, order_id: number): Promise<OrderInfo[]> { // Single Order including all products
         try {
+            verifyUser(auth);
             const result = this.orderInfoStore.getOrderProducts(auth, order_id);
             return result;
         } catch (error: any) {
@@ -64,48 +65,33 @@ export class OrderStore {
         }
     }
 
-    async placeOrder(auth: string): Promise<Order> {
-        // Should not be place because order should exist while stil Pending in cart
-        // Create
-        try {
-            const decoded = verifyUser(auth);
 
-            const result = await dbConnection(
-                "INSERT INTO orders_table (user_id, status) VALUES($1,$2)",
-                [Object.values(decoded)[0], "Active"]
-            );
-            return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error while placing order for user with id`);
-        }
-    }
+    // async updateOrder(auth: string, status: string): Promise<Order> {
+    //     // Update
+    //     try {
+    //         const order_id = this.orderInfoStore.getPendingOrder(auth);
 
-    async updateOrder(auth: string, order_id: number, status: string): Promise<Order> {
-        // Update
-        try {
-            verifyUser(auth);
+    //         const result = await dbConnection(
+    //             "UPDATE orders_table SET order_status=$1 WHERE id=$2",
+    //             [order_id, status]
+    //         );
+    //         return result.rows[0];
+    //     } catch (error) {
+    //         throw new Error(`Error while updating order`);
+    //     }
+    // }
 
-            const result = await dbConnection(
-                "UPDATE orders_table SET status=$1 WHERE id=$2",
-                [order_id, status]
-            );
-            return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error while updating order with id: ${order_id}`);
-        }
-    }
-
-    async cancelOrder(auth: string, order_id: number): Promise<Order> {
-        // Delete
-        try {
-            const result = await dbConnection(
-                "DELETE FROM orders_table WHERE id=$1",
-                [order_id]
-            );
-            this.orderInfoStore.cancelOrder(auth, order_id);
-            return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error while canceling order`);
-        }
-    }
+    // async cancelOrder(auth: string, order_id: number): Promise<Order> {
+    //     // Delete
+    //     try {
+    //         const result = await dbConnection(
+    //             "DELETE FROM orders_table WHERE id=$1",
+    //             [order_id]
+    //         );
+    //         this.orderInfoStore.cancelOrder(auth, order_id);
+    //         return result.rows[0];
+    //     } catch (error) {
+    //         throw new Error(`Error while canceling order`);
+    //     }
+    // }
 }

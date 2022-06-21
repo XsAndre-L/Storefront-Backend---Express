@@ -1,6 +1,6 @@
 import { dbConnection, verifyUser } from "../database";
 
-import { Order } from "./order-model";
+import { Order, OrderStore } from "./order-model";
 import { Product } from "./product-model";
 
 
@@ -12,6 +12,7 @@ export type OrderInfo = {
 };
 
 export class OrderInfoStore {
+    //orderStore: OrderStore = new OrderStore();
 
     async getOrderProducts(auth: string, order_id: number): Promise<OrderInfo[]> {
         try {
@@ -27,34 +28,36 @@ export class OrderInfoStore {
         }
     }
 
-    async addProduct(
+    async addOrderProduct(
         auth: string,
-        order_id: number,
-        product: Product,
+        // order_id: number,
+        product: number,
         productAmount: number
     ): Promise<OrderInfo[]> {
         try {
-            verifyUser(auth);
+            //verifyUser(auth);
+            const order_id = await this.getPendingOrder(auth);
 
             const result = await dbConnection(
                 "INSERT INTO order_info_table (order_id, product_id, amount) VALUES($1,$2,$3)",
-                [order_id, product.id, productAmount]
+                [order_id, product, productAmount]
             );
             return result.rows;
-        } catch (error) {
-            throw new Error(`Error `);
+        } catch (error: any) {
+            throw new Error(`Error | CODE : ${error.message}`);
         }
     }
 
 
     async deleteOrderProduct(
         auth: string,
-        order_id: number,
+        // order_id: number,
         product_id: number
     ): Promise<OrderInfo> {
         // delete
         try {
-            verifyUser(auth);
+            // verifyUser(auth);
+            const order_id = await this.getPendingOrder(auth);
 
             const result = await dbConnection(
                 "DELETE FROM order_info_table WHERE order_id=$1 AND product_id=$2",
@@ -92,7 +95,23 @@ export class OrderInfoStore {
             );
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Error `);
+            throw new Error(`Error`);
+        }
+    }
+
+    async getPendingOrder(auth: string): Promise<number> {
+        try {
+            const jwtDecoded = verifyUser(auth);//jwt.verify(auth, String(JWT_SIGN_TOKEN));
+
+            const result = await dbConnection(
+                "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",
+                [Object.values(jwtDecoded)[0], "Pending"]
+            )
+
+            return result.rows[0].id;
+
+        } catch (error: any) {
+            throw new Error(`Could not retrieve the pending order on user`);
         }
     }
 }

@@ -9,7 +9,7 @@ app.use(express.json()); // for parsing application/json
 
 app.use("/", mainRoute);
 
-console.log("Hello World!");
+// console.log("Hello World!");
 
 app.listen(port, () => {
     console.log(`Started server on port: ${port}`);

@@ -39,8 +39,8 @@ export class UserStore {
     async createAccount(newUser: User): Promise<string> {
         try {
             // First try to authenticate user too see if the account does not exist
-            const currAuth = await this.authenticate(newUser);
-            console.log("auth - " + currAuth);
+            const currAuth = await this.authenticateUser(newUser);
+            //console.log("auth - " + currAuth);
 
             if (currAuth != null) {
                 return "USER ALREADY EXISTS";
@@ -56,7 +56,6 @@ export class UserStore {
                 [newUser.firstName, newUser.lastName, hash]
             );
 
-            console.log(`${result}`);
             const jwtUser: User = {
                 id: parseInt(result.rows[0].id),
                 firstName: newUser.firstName,
@@ -74,7 +73,7 @@ export class UserStore {
         }
     }
 
-    async authenticate(userDetails: User): Promise<string | null> {
+    async authenticateUser(userDetails: User): Promise<string | null> {
         try {
             const result = await dbConnection(
                 "SELECT * FROM users_table WHERE firstName=$1 AND lastName=$2",
@@ -86,7 +85,7 @@ export class UserStore {
             }
 
             const auth: User = result.rows[0];
-            console.dir(auth);
+            //console.dir(auth);
 
             const success = bcrypt.compareSync(
                 userDetails.password + BCRYPT_PASSWORD,
@@ -95,8 +94,8 @@ export class UserStore {
 
             if (success) {
                 const token = jwt.sign(auth, String(JWT_SIGN_TOKEN));
-                console.log("USER EXISTS");
-                console.log(token);
+                //console.log("USER EXISTS");
+                //console.log(token);
                 return String(token);
             } else {
                 return null;

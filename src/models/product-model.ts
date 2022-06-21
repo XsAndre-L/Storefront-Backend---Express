@@ -1,4 +1,4 @@
-import { dbConnection } from "../database";
+import { dbConnection, verifyUser } from "../database";
 
 export type Product = {
     id?: number;
@@ -8,7 +8,7 @@ export type Product = {
 };
 
 export class ProductStore {
-    async index(): Promise<Product[]> {
+    async getProducts(): Promise<Product[]> {
         // get
         try {
             const result = await dbConnection(
@@ -21,7 +21,7 @@ export class ProductStore {
         }
     }
 
-    async show(id: string): Promise<Product> {
+    async getProductDetails(id: string): Promise<Product> {
         // :id get
         try {
             const result = await dbConnection(
@@ -34,9 +34,11 @@ export class ProductStore {
         }
     }
 
-    async create(newProduct: Product): Promise<Product> {
+    async createProduct(auth: string, newProduct: Product): Promise<Product> {
         // Post
         try {
+            verifyUser(auth);
+
             const result = await dbConnection(
                 "INSERT INTO products_table (name,price,category) VALUES($1,$2,$3)",
                 [newProduct.name, newProduct.price, newProduct.category]
@@ -49,9 +51,10 @@ export class ProductStore {
         }
     }
 
-    async update(id: string, updatedProduct: Product): Promise<Product> {
-        // put
+    async updateProduct(auth: string, id: string, updatedProduct: Product): Promise<Product> {
         try {
+            verifyUser(auth);
+
             const result = await dbConnection(
                 "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4",
                 [
@@ -68,9 +71,11 @@ export class ProductStore {
         }
     }
 
-    async delete(id: string): Promise<Product> {
+    async delete(auth: string, id: string): Promise<Product> {
         // delete
         try {
+            verifyUser(auth);
+
             const result = await dbConnection(
                 "DELETE FROM products_table WHERE id=$1",
                 [id.startsWith(":") ? id.substring(1) : id]

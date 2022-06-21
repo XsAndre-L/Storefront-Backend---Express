@@ -15,20 +15,20 @@ cartRoute
     .get(async (_req: express.Request, res: express.Response): Promise<void> => { // Get cart contents
 
         try {
-            const order_id = await orderStore.getPendingOrder(String(_req.headers.authorization));
+            const order_id = await orderInfoStore.getPendingOrder(String(_req.headers.authorization));
             const orderProducts = await orderInfoStore.getOrderProducts(String(_req.headers.authorization), order_id);
 
             res.send(orderProducts);
 
         } catch (error: any) {
-            res.status(500).send(error.message);
+            res.status(500).send(error.message)
         }
     })
     .post(async (_req: express.Request, res: express.Response): Promise<void> => { // Add item too cart
 
         try {
-            const order_id = await orderStore.getPendingOrder(String(_req.headers.authorization));
-            await orderInfoStore.addProduct(String(_req.headers.authorization), order_id, _req.body.product_id, _req.body.productAmount);
+            //const order_id = await orderStore.getPendingOrder(String(_req.headers.authorization));
+            await orderInfoStore.addOrderProduct(String(_req.headers.authorization), _req.body.product_id, _req.body.productAmount);
             res.send("add item too cart");
         } catch (error: any) {
             res.status(500).send(error.message);
@@ -37,7 +37,7 @@ cartRoute
     .put(async (_req: express.Request, res: express.Response): Promise<void> => { // Edit Item Quantity
 
         try {
-            const order_id = await orderStore.getPendingOrder(String(_req.headers.authorization));
+            const order_id = await orderInfoStore.getPendingOrder(String(_req.headers.authorization));
 
             const cartItem: OrderInfo = {
                 order_id: order_id,
@@ -46,7 +46,8 @@ cartRoute
             }
 
             await orderInfoStore.updateProductAmount(String(_req.headers.authorization), cartItem);
-            res.send("edit quantity");
+            res.send(`edit quantity of item: ${cartItem.product_id}`);
+
         } catch (error: any) {
             res.status(500).send(error.message);
         }
@@ -54,8 +55,7 @@ cartRoute
     .delete(async (_req: express.Request, res: express.Response): Promise<void> => { // Remove Item from cart
 
         try {
-            const order_id = await orderStore.getPendingOrder(String(_req.headers.authorization));
-            await orderInfoStore.deleteOrderProduct(String(_req.headers.authorization), order_id, _req.body.product_id);
+            await orderInfoStore.deleteOrderProduct(String(_req.headers.authorization), _req.body.product_id);
             res.send("remove item from cart");
         } catch (error: any) {
             res.status(500).send(error.message);

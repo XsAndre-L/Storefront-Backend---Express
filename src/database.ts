@@ -56,7 +56,7 @@ export const verifyUser = (auth: string | null): string | jwt.JwtPayload => {
         return verification;
 
     } catch (error: any) {
-        console.log("User not logged in...");
+        //console.log("User not logged in...");
         throw new Error(`Authentication Error`);
     }
 }

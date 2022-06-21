@@ -64,7 +64,7 @@ userRoute
         };
 
         try {
-            const result = await userStore.authenticate(userDetails);
+            const result = await userStore.authenticateUser(userDetails);
             res.status(200).send(result);
         } catch (error: any) {
             res.status(500).send(error.message);
