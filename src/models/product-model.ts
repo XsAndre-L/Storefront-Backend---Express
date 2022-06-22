@@ -8,14 +8,23 @@ export type Product = {
 };
 
 export class ProductStore {
-    async getProducts(): Promise<Product[]> {
+    async getProducts(category: string | null): Promise<Product[]> {
         // get
         try {
-            const result = await dbConnection(
-                "SELECT * FROM products_table",
-                []
-            );
-            return result.rows;
+            if (category != null) {
+                const result = await dbConnection(
+                    "SELECT * FROM products_table WHERE category=$1",
+                    [category]
+                );
+                return result.rows;
+            } else {
+
+                const result = await dbConnection(
+                    "SELECT * FROM products_table",
+                    []
+                );
+                return result.rows;
+            }
         } catch (error) {
             throw new Error(`Error when while getting all products!`);
         }

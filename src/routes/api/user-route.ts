@@ -7,9 +7,8 @@ const userRoute = express.Router();
 
 userRoute
     .route("/") // Authenticated user routes
-    .get(
+    .get(   // User Details
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // User Details
 
             try {
                 const result = await userStore.getUserDetails(
@@ -21,9 +20,8 @@ userRoute
             }
         }
     )
-    .put(
+    .put(   // Update User Details
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // Update User Details
 
             const user: User = {
                 id: _req.body.id,

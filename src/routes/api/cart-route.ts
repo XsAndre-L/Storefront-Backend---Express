@@ -1,14 +1,10 @@
 import express from "express";
-import { verifyUser } from "../../database";
-// import jwt from 'jsonwebtoken';
-// import { dbConnection } from "../../database";
 import { OrderInfo, OrderInfoStore } from "../../models/cart-model";
-import { OrderStore } from "../../models/order-model";
+
 
 const cartRoute = express.Router();
 
 const orderInfoStore = new OrderInfoStore();
-const orderStore = new OrderStore();
 
 cartRoute
     .route("/")
@@ -44,7 +40,7 @@ cartRoute
 
             try {
                 //const order_id = await orderStore.getPendingOrder(String(_req.headers.authorization));
-                await orderInfoStore.addOrderProduct(
+                await orderInfoStore.addCartItem(
                     String(_req.headers.authorization),
                     _req.body.product_id,
                     _req.body.productAmount
@@ -65,6 +61,7 @@ cartRoute
                 );
 
                 if (order_id == null) {
+                    res.end();
                     return;
                 }
 
@@ -74,7 +71,7 @@ cartRoute
                     amount: _req.body.productAmount,
                 };
 
-                await orderInfoStore.updateProductAmount(
+                await orderInfoStore.updateCartItemAmount(
                     String(_req.headers.authorization),
                     cartItem
                 );
@@ -89,7 +86,7 @@ cartRoute
             // Remove Item from cart
 
             try {
-                await orderInfoStore.deleteOrderProduct(
+                await orderInfoStore.deleteCartItem(
                     String(_req.headers.authorization),
                     _req.body.product_id
                 );

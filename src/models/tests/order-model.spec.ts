@@ -2,7 +2,7 @@ import { OrderStore } from "../order-model";
 
 const orderStore = new OrderStore();
 
-describe("Testing existance of functions in the Product model", () => {
+describe("Testing existance of functions in the Order model", () => {
     it("Check existance of showActiveOrders", () => {
         expect(orderStore.showActiveOrders).toBeDefined();
     });

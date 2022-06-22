@@ -10,9 +10,23 @@ productsRoute
     .get(
         async (_req: express.Request, res: express.Response): Promise<void> => {
             // GET PRODUCT INDEX
+            try {
+                //console.log(_req.query.category);
+                if (_req.query.category) {
+                    console.log("category supplied")
+                    const productList: Product[] = await productStore.getProducts(String(_req.query.category));
+                    res.status(200).json(productList);
 
-            const productList: Product[] = await productStore.getProducts();
-            res.status(200).json(productList);
+                } else {
+                    console.log("all products showing")
+                    const productList: Product[] = await productStore.getProducts(null);
+                    res.status(200).json(productList);
+                }
+
+            } catch (error: any) {
+                res.status(500).send(error.message);
+            }
+
         }
     )
     .post(

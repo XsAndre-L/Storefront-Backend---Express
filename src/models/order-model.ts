@@ -108,7 +108,7 @@ export class OrderStore {
                 "DELETE FROM orders_table WHERE id=$1",
                 [order_id]
             );
-            this.orderInfoStore.cancelOrder(auth, order_id);
+            this.orderInfoStore.cancelPendingOrder(auth, order_id);
             return result.rows[0];
 
         } catch (error) {

@@ -25,20 +25,19 @@ export class OrderInfoStore {
                 [order_id]
             );
             return result.rows;
-        } catch (error) {
-            throw new Error(`Error `);
+        } catch (error: any) {
+            throw new Error(`Error CODE | ${error.message}`);
         }
     }
 
     // CREATE
-    async addOrderProduct(
+    async addCartItem(
         auth: string,
-        // order_id: number,
         product: number,
         productAmount: number
     ): Promise<OrderInfo[]> {
         try {
-            //verifyUser(auth);
+            verifyUser(auth);
             const order_id = await this.getPendingOrder(auth);
 
             const result = await dbConnection(
@@ -52,13 +51,13 @@ export class OrderInfoStore {
     }
 
     // DELETE Single Product
-    async deleteOrderProduct(
+    async deleteCartItem(
         auth: string,
         product_id: number
     ): Promise<OrderInfo> {
-        // delete
+
         try {
-            // verifyUser(auth);
+            verifyUser(auth);
             const order_id = await this.getPendingOrder(auth);
 
             const result = await dbConnection(
@@ -72,7 +71,7 @@ export class OrderInfoStore {
     }
 
     // EDIT
-    async updateProductAmount(
+    async updateCartItemAmount(
         auth: string,
         orderInfo: OrderInfo
     ): Promise<OrderInfo> {
@@ -90,7 +89,7 @@ export class OrderInfoStore {
     }
 
     // DELETE All Products In an Order
-    async cancelOrder(auth: string, order_id: number): Promise<OrderInfo[]> {
+    async cancelPendingOrder(auth: string, order_id: number): Promise<OrderInfo[]> {
         try {
             verifyUser(auth);
 

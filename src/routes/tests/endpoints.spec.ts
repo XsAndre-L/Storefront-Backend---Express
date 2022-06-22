@@ -31,7 +31,7 @@ describe("Product endpoints", () => {
         expect(response.status).toBe(200);
     });
 
-    it("/product/ | Add new product", async () => {
+    it("/product/ | Add new product", async () => { // Authentication Error Should Occur
         const response = await st.post("/product");
         expect(response.status).toBe(500);
     });
@@ -39,7 +39,7 @@ describe("Product endpoints", () => {
     // Single Product Routes
     it("/product/:id | Get product details", async () => {
         const response = await st.get("/product/1");
-        expect(response.status).toBe(200);
+        expect(response.body).toEqual({ id: 1, name: 'apple', price: 5, category: 'fruit' });
     });
 
     it("/product/:id | Delete single product", async () => {
@@ -73,7 +73,7 @@ describe("Order Endpoints", () => {
 describe("Cart Endpoints", () => {
     it("/cart | Get cart contents", async () => {
         const response = await st.get("/cart");
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(200);
     });
 
     it("/cart | Add to cart", async () => {
@@ -88,6 +88,6 @@ describe("Cart Endpoints", () => {
 
     it("/cart | Update cart item quantity", async () => {
         const response = await st.put("/cart");
-        expect(response.status).toBe(500);
+        expect(response.status).toBe(200);
     });
 });

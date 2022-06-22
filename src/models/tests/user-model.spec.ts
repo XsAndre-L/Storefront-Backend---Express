@@ -1,33 +1,62 @@
 import { UserStore } from "../user-model";
 
-const store = new UserStore();
+const userStore = new UserStore();
 
 describe("Testing existance of functions in the User model", () => {
     it("Create User should exist", () => {
-        expect(store.createAccount).toBeDefined();
+        expect(userStore.createAccount).toBeDefined();
     });
 
     it("Authenticate user should exist", () => {
-        expect(store.authenticateUser).toBeDefined();
+        expect(userStore.authenticateUser).toBeDefined();
     });
 
     it("Get User Details fuction should exist", () => {
-        expect(store.getUserDetails).toBeDefined();
+        expect(userStore.getUserDetails).toBeDefined();
     });
 
     it("Function to update user details should exist", () => {
-        expect(store.updateUserDetails).toBeDefined();
+        expect(userStore.updateUserDetails).toBeDefined();
     });
 });
 
 describe("user signup tests", () => {
     it("/user/signup | Add new user too database", async () => {
-        const response = await store.createAccount({
+        // await userStore.createAccount({
+        //     firstName: "Jim",
+        //     lastName: "Timothy",
+        //     password: "randomPassword",
+        // });
+        const response = await userStore.createAccount({
             firstName: "Jim",
             lastName: "Timothy",
             password: "randomPassword",
         });
         console.log("RESPONSE = " + response);
-        // expect(store.createAccount()).to
+
+        expect(response).toEqual(jasmine.any(String));
+        // expect(userStore.createAccount()).to
     });
 });
+
+describe("User login tests", () => {
+    it("/user/login | Authenticate valid user", async () => {
+        const response = await userStore.authenticateUser({
+            firstName: "Jim",
+            lastName: "Timothy",
+            password: "randomPassword",
+        })
+
+        expect(response).toEqual(jasmine.any(String));
+    })
+
+    it("/user/login | Authenticate invalid user", async () => {
+        const response = await userStore.authenticateUser({
+            firstName: "Jill",
+            lastName: "Timothy",
+            password: "randomPassword",
+        })
+
+        expect(response).toEqual(null);
+    })
+})
