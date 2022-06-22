@@ -23,7 +23,7 @@ export type User = {
 export class UserStore {
     async getUserDetails(auth: string): Promise<User> {
         try {
-            const decoded = verifyUser(auth);//jwt.verify(auth, String(JWT_SIGN_TOKEN));
+            const decoded = verifyUser(auth); //jwt.verify(auth, String(JWT_SIGN_TOKEN));
 
             const result = await dbConnection(
                 "SELECT * FROM users_table WHERE id=$1",
@@ -63,7 +63,7 @@ export class UserStore {
                 password: hash,
             };
 
-            const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN))//verifyUser(jwtUser);
+            const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN)); //verifyUser(jwtUser);
 
             return String(token);
         } catch (error: any) {

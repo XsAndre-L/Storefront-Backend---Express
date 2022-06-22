@@ -1,8 +1,7 @@
 import { dbConnection, verifyUser } from "../database";
 
-import { Order, OrderStore } from "./order-model";
-import { Product } from "./product-model";
-
+// import { Order, OrderStore } from "./order-model";
+// import { Product } from "./product-model";
 
 export type OrderInfo = {
     id?: number;
@@ -12,9 +11,12 @@ export type OrderInfo = {
 };
 
 export class OrderInfoStore {
-    //orderStore: OrderStore = new OrderStore();
+    // INDEX
+    async getOrderProducts(
+        auth: string,
+        order_id: number
+    ): Promise<OrderInfo[]> {
 
-    async getOrderProducts(auth: string, order_id: number): Promise<OrderInfo[]> {
         try {
             verifyUser(auth);
 
@@ -28,6 +30,7 @@ export class OrderInfoStore {
         }
     }
 
+    // CREATE
     async addOrderProduct(
         auth: string,
         // order_id: number,
@@ -48,10 +51,9 @@ export class OrderInfoStore {
         }
     }
 
-
+    // DELETE Single Product
     async deleteOrderProduct(
         auth: string,
-        // order_id: number,
         product_id: number
     ): Promise<OrderInfo> {
         // delete
@@ -69,8 +71,11 @@ export class OrderInfoStore {
         }
     }
 
-    async updateProductAmount(auth: string, orderInfo: OrderInfo): Promise<OrderInfo> {
-        // Put
+    // EDIT
+    async updateProductAmount(
+        auth: string,
+        orderInfo: OrderInfo
+    ): Promise<OrderInfo> {
         try {
             verifyUser(auth);
 
@@ -84,8 +89,8 @@ export class OrderInfoStore {
         }
     }
 
+    // DELETE All Products In an Order
     async cancelOrder(auth: string, order_id: number): Promise<OrderInfo[]> {
-        // remove all order info's linked to an order
         try {
             verifyUser(auth);
 
@@ -99,19 +104,26 @@ export class OrderInfoStore {
         }
     }
 
-    async getPendingOrder(auth: string): Promise<number> {
+    // Get Users Pending Order (Cart Order)
+    // -- this function interacts with the order table and not the order info table, reason being
+    // -- we need access to the current pending order not only in order model but also in cart model
+    // -- OrderModel References instance or orderInfoModel therefore we can't reference instance of orderModel 
+    // -- inside orderInfoModel for the purpose of preventing circular dependency.
+    async getPendingOrder(auth: string): Promise<number | null> {
         try {
-            const jwtDecoded = verifyUser(auth);//jwt.verify(auth, String(JWT_SIGN_TOKEN));
+            const jwtDecoded = verifyUser(auth);
+            console.log('getting pending order')
 
             const result = await dbConnection(
                 "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",
                 [Object.values(jwtDecoded)[0], "Pending"]
-            )
+            );
+            console.log('ID - ' + result.rows[0].id);
 
             return result.rows[0].id;
-
         } catch (error: any) {
-            throw new Error(`Could not retrieve the pending order on user`);
+            return null;
+            //throw new Error(`Could not retrieve the pending order on user`);
         }
     }
 }

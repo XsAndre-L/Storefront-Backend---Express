@@ -51,7 +51,11 @@ export class ProductStore {
         }
     }
 
-    async updateProduct(auth: string, id: string, updatedProduct: Product): Promise<Product> {
+    async updateProduct(
+        auth: string,
+        id: string,
+        updatedProduct: Product
+    ): Promise<Product> {
         try {
             verifyUser(auth);
 
