@@ -48,10 +48,28 @@ export class OrderInfoStore {
                 "INSERT INTO order_info_table (order_id, product_id, amount) VALUES($1,$2,$3)",
                 [order_id, product, productAmount]
             );
+
+            await this.increasePopularity(product, productAmount);
+
+
             return result.rows;
         } catch (error: any) {
             throw new Error(`Error | CODE : ${error.message}`);
         }
+    }
+
+    async increasePopularity(product_id: number, product_amount: number) {
+        const currentPopularity = await dbConnection(
+            "SELECT popularity FROM products_table WHERE id=$1",
+            [product_id]
+        )
+        // console.log(currentPopularity)
+
+        await dbConnection(
+            "UPDATE products_table SET popularity=$1 WHERE id=$2",
+            [parseInt(String(currentPopularity.rows[0].popularity)) + 1, product_id]
+        )
+
     }
 
     // DELETE Single Product

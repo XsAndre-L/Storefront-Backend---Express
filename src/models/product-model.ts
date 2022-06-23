@@ -21,7 +21,8 @@ export class ProductStore {
                     sql = "SELECT * FROM products_table WHERE category=$1"
                     params = [category];
                 } else {
-                    sql = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM (SELECT * FROM order_info_table WHERE product_id IN (SELECT id FROM products_table WHERE category=$1)) AS my_options GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
+                    //sql = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM (SELECT * FROM order_info_table WHERE product_id IN (SELECT id FROM products_table WHERE category=$1)) AS my_options GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
+                    sql = "SELECT * FROM products_table WHERE category=$1 ORDER BY popularity DESC"
                     params = [category];
                 }
 
@@ -48,22 +49,6 @@ export class ProductStore {
             throw new Error(`Error while getting all products! ${error.message}`);
         }
     }
-
-    // async filterProducts(category: string | null): Promise<Product[] | void> {
-    //     try {
-    //         if (category == null) {
-    //             return;
-    //         }
-    //     } catch (error: any) {
-    //         throw new Error(`Error while getting filtered products`)
-    //     }
-    // }
-
-    // sortProducts(sort: string | null): string {
-
-    //     let sql: string = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM order_info_table GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
-
-    // }
 
     //------------------------------------------------
 
