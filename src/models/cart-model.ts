@@ -35,10 +35,14 @@ export class OrderInfoStore {
         auth: string,
         product: number,
         productAmount: number
-    ): Promise<OrderInfo[]> {
+    ): Promise<OrderInfo[] | null> {
         try {
             verifyUser(auth);
+
             const order_id = await this.getPendingOrder(auth);
+            if (order_id == null) { // No pending order
+                throw new Error(`No Pending Order `);
+            }
 
             const result = await dbConnection(
                 "INSERT INTO order_info_table (order_id, product_id, amount) VALUES($1,$2,$3)",

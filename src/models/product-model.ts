@@ -8,27 +8,64 @@ export type Product = {
 };
 
 export class ProductStore {
-    async getProducts(category: string | null): Promise<Product[]> {
+    async getProducts(category: string | null, sort: string | null): Promise<Product[]> {
         // get
         try {
-            if (category != null) {
-                const result = await dbConnection(
-                    "SELECT * FROM products_table WHERE category=$1",
-                    [category]
-                );
-                return result.rows;
-            } else {
+            let sql: string;
+            let params: any;
 
-                const result = await dbConnection(
-                    "SELECT * FROM products_table",
-                    []
-                );
-                return result.rows;
+            if (category != null) {
+
+                if (sort == null) {
+
+                    sql = "SELECT * FROM products_table WHERE category=$1"
+                    params = [category];
+                } else {
+                    sql = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM (SELECT * FROM order_info_table WHERE product_id IN (SELECT id FROM products_table WHERE category=$1)) AS my_options GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
+                    params = [category];
+                }
+
+            } else {
+                if (sort == null) {
+
+                    sql = "SELECT * FROM products_table";
+                    params = [];
+                } else {
+                    sql = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM order_info_table GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
+                    params = [];
+                }
+
             }
-        } catch (error) {
-            throw new Error(`Error when while getting all products!`);
+
+            const result = await dbConnection(
+                sql,
+                params
+            );
+
+            return result.rows;
+
+        } catch (error: any) {
+            throw new Error(`Error while getting all products! ${error.message}`);
         }
     }
+
+    // async filterProducts(category: string | null): Promise<Product[] | void> {
+    //     try {
+    //         if (category == null) {
+    //             return;
+    //         }
+    //     } catch (error: any) {
+    //         throw new Error(`Error while getting filtered products`)
+    //     }
+    // }
+
+    // sortProducts(sort: string | null): string {
+
+    //     let sql: string = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM order_info_table GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
+
+    // }
+
+    //------------------------------------------------
 
     async getProductDetails(id: string): Promise<Product> {
         // :id get

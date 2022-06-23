@@ -43,7 +43,7 @@ cartRoute
                 await orderInfoStore.addCartItem(
                     String(_req.headers.authorization),
                     _req.body.product_id,
-                    _req.body.productAmount
+                    _req.body.product_amount
                 );
                 res.send("add item too cart");
             } catch (error: any) {

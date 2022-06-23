@@ -85,7 +85,6 @@ export class UserStore {
             }
 
             const auth: User = result.rows[0];
-            //console.dir(auth);
 
             const success = bcrypt.compareSync(
                 userDetails.password + BCRYPT_PASSWORD,
@@ -94,12 +93,11 @@ export class UserStore {
 
             if (success) {
                 const token = jwt.sign(auth, String(JWT_SIGN_TOKEN));
-                //console.log("USER EXISTS");
-                //console.log(token);
                 return String(token);
             } else {
                 return null;
             }
+
         } catch (error) {
             throw new Error(
                 `Error while authenticating new user. | CODE : ${error}`

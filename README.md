@@ -22,5 +22,15 @@ in the directory where you cloned the repo do
 
 
 
+## Info
+
+### Ports: 
+Database: 54320
+Backend API: 3000
+
+
+
+
+
 
 

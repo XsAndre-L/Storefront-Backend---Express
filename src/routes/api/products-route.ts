@@ -12,13 +12,21 @@ productsRoute
             // GET PRODUCT INDEX
             try {
 
-                let productList: Product[];
+                // let productList: Product[];
+
+                let category: string | null = null;
+                let sort: string | null = null;
 
                 if (_req.query.category) { // If category is supplied
-                    productList = await productStore.getProducts(String(_req.query.category));
-                } else {
-                    productList = await productStore.getProducts(null);
+                    category = String(_req.query.category);
                 }
+
+                if (_req.query.sort) {
+                    sort = String(_req.query.sort);
+                }
+
+                const productList = await productStore.getProducts(category, sort);
+
 
                 res.status(200).json(productList);
 
