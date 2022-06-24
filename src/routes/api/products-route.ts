@@ -1,33 +1,29 @@
 import express from "express";
 import { Product, ProductStore } from "../../models/product-model";
 
-const productsRoute = express.Router();
-
 const productStore = new ProductStore();
+
+
+const productsRoute = express.Router();
 
 productsRoute
     .route("/")
     .get(
+        // GET PRODUCT INDEX
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // GET PRODUCT INDEX
+
+            let category: string | null = null;
+            let sort: string | null = null;
+
+            if (_req.query.category) { // If category is supplied
+                category = String(_req.query.category);
+            }
+            if (_req.query.sort) {
+                sort = String(_req.query.sort);
+            }
+
             try {
-
-                // let productList: Product[];
-
-                let category: string | null = null;
-                let sort: string | null = null;
-
-                if (_req.query.category) { // If category is supplied
-                    category = String(_req.query.category);
-                }
-
-                if (_req.query.sort) {
-                    sort = String(_req.query.sort);
-                }
-
                 const productList = await productStore.getProducts(category, sort);
-
-
                 res.status(200).json(productList);
 
             } catch (error: any) {
@@ -36,8 +32,8 @@ productsRoute
         }
     )
     .post(
+        // CREATE PRODUCT
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // CREATE PRODUCT
 
             const product: Product = {
                 name: _req.body.name,
@@ -58,15 +54,15 @@ productsRoute
     );
 
 productsRoute
-    .route("/:id") // Single Product
+    .route("/:id")
     .get(
+        // SHOW PRODUCT DETAILS
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // SHOW PRODUCT
 
             try {
                 const product: Product = await productStore.getProductDetails(
-                    _req.params.id
-                ); // need to get id from url
+                    _req.params.id  // need to get id from url
+                );
                 res.status(200).json(product);
             } catch (error: any) {
                 res.status(500).send(error.message);
@@ -74,8 +70,8 @@ productsRoute
         }
     )
     .put(
+        // UPDATE PRODUCT
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // UPDATE PRODUCT
 
             const pInfo: Product = {
                 name: _req.body.name,
@@ -96,8 +92,8 @@ productsRoute
         }
     )
     .delete(
+        // DELETE PRODUCT
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            // DELETE PRODUCT
 
             try {
                 const product: Product = await productStore.delete(

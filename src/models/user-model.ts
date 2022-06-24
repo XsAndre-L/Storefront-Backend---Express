@@ -40,8 +40,6 @@ export class UserStore {
         try {
             // First try to authenticate user too see if the account does not exist
             const currAuth = await this.authenticateUser(newUser);
-            //console.log("auth - " + currAuth);
-
             if (currAuth != null) {
                 return "USER ALREADY EXISTS";
             }
@@ -79,7 +77,6 @@ export class UserStore {
                 "SELECT * FROM users_table WHERE firstName=$1 AND lastName=$2",
                 [userDetails.firstName, userDetails.lastName]
             );
-
             if (result.rows[0] == undefined) {
                 return null;
             }
@@ -114,8 +111,6 @@ export class UserStore {
             );
             return result.rows[0];
         } catch (error: any) {
-            // console.error(`${error.message}`)
-            // return null;
             throw new Error(
                 `Could not update user details | code: ${error.message}`
             );

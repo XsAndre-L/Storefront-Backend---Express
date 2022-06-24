@@ -37,7 +37,7 @@ if (ENV === "dev") {
     });
 }
 
-// Function to connect, query and disconnect from Database
+// FUNCTION TO CONNECT, QUERY AND DISCONNECT DATABASE
 export const dbConnection = async (
     sql: string,
     sqlInput: any[]
@@ -54,7 +54,6 @@ export const verifyUser = (auth: string | null): string | jwt.JwtPayload => {
         const verification = jwt.verify(String(auth), String(JWT_SIGN_TOKEN));
         return verification;
     } catch (error: any) {
-        //console.log("User not logged in...");
         throw new Error(`Authentication Error`);
     }
 };

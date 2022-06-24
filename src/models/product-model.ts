@@ -50,8 +50,6 @@ export class ProductStore {
         }
     }
 
-    //------------------------------------------------
-
     async getProductDetails(id: string): Promise<Product> {
         // :id get
         try {

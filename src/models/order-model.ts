@@ -33,7 +33,7 @@ export class OrderStore {
         try {
             const decoded = verifyUser(auth);
             const order_id = await this.orderInfoStore.getPendingOrder(auth);
-            console.log('the order ID - ' + order_id);
+
 
             if (order_id != null) {
                 console.log("Return already existing pending order")
@@ -46,7 +46,7 @@ export class OrderStore {
             } else {
                 console.log(decoded);
                 const result = await dbConnection(
-                    "INSERT INTO orders_table (user_id, order_status) VALUES($1,$2)",
+                    "INSERT INTO orders_table (user_id, order_status) VALUES($1,$2) RETURNING id",
                     [Object.values(decoded)[0], "Pending"]
                 );
                 return result.rows[0];
@@ -78,7 +78,7 @@ export class OrderStore {
         try {
             verifyUser(auth);
             const order_id = await this.orderInfoStore.getPendingOrder(auth);
-            console.log(order_id);
+            // console.log(order_id);
             if (order_id == null) {
                 return null;
             }

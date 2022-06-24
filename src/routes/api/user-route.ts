@@ -3,11 +3,13 @@ import { User, UserStore } from "../../models/user-model";
 
 const userStore = new UserStore();
 
+
 const userRoute = express.Router();
 
 userRoute
-    .route("/") // Authenticated user routes
-    .get(   // User Details
+    .route("/")
+    .get(
+        // USER DETAILS
         async (_req: express.Request, res: express.Response): Promise<void> => {
 
             try {
@@ -20,7 +22,8 @@ userRoute
             }
         }
     )
-    .put(   // Update User Details
+    .put(
+        // UPDATE USER DETAILS
         async (_req: express.Request, res: express.Response): Promise<void> => {
 
             const user: User = {
@@ -42,6 +45,7 @@ userRoute
 userRoute
     .route("/signup")
     .post(
+        // CREATE NEW USER
         async (_req: express.Request, res: express.Response): Promise<void> => {
             const newUser: User = {
                 firstName: _req.body.firstName,
@@ -61,6 +65,7 @@ userRoute
 userRoute
     .route("/login")
     .post(
+        // AUTHENTICATE EXISTING USER
         async (_req: express.Request, res: express.Response): Promise<void> => {
             const userDetails: User = {
                 firstName: _req.body.firstName,

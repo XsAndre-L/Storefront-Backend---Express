@@ -39,7 +39,7 @@ describe("Product endpoints", () => {
     // Single Product Routes
     it("/product/:id | Get product details", async () => {
         const response = await st.get("/product/1");
-        expect(response.body).toEqual({ id: 1, name: 'apple', price: 5, category: 'fruit' });
+        expect(response.body).toEqual({ id: 1, name: 'apple', price: 5, category: 'fruit', popularity: 0 });
     });
 
     it("/product/:id | Delete single product", async () => {

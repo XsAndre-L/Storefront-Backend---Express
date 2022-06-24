@@ -1,7 +1,5 @@
 import { dbConnection, verifyUser } from "../database";
 
-// import { Order, OrderStore } from "./order-model";
-// import { Product } from "./product-model";
 
 export type OrderInfo = {
     id?: number;
@@ -33,43 +31,37 @@ export class OrderInfoStore {
     // CREATE
     async addCartItem(
         auth: string,
-        product: number,
+        order_id: number,
+        product_id: number,
         productAmount: number
     ): Promise<OrderInfo[] | null> {
         try {
             verifyUser(auth);
 
-            const order_id = await this.getPendingOrder(auth);
-            if (order_id == null) { // No pending order
-                throw new Error(`No Pending Order `);
+            // Check if cart already contains product with the id of "product_id"
+            const existanceCheck = await dbConnection(
+                "SELECT id FROM order_info_table WHERE order_id=$1 AND product_id=$2",
+                [order_id, product_id]
+            )
+            if (existanceCheck.rows[0] != undefined) {
+                throw new Error("Product was already added to this cart!");
             }
+            // ---
 
             const result = await dbConnection(
                 "INSERT INTO order_info_table (order_id, product_id, amount) VALUES($1,$2,$3)",
-                [order_id, product, productAmount]
+                [order_id, product_id, productAmount]
             );
 
-            await this.increasePopularity(product, productAmount);
-
+            await dbConnection(
+                "UPDATE products_table SET popularity=popularity+1 WHERE id=$1",
+                [product_id]
+            )
 
             return result.rows;
         } catch (error: any) {
-            throw new Error(`Error | CODE : ${error.message}`);
+            throw new Error(`${error.message}`);
         }
-    }
-
-    async increasePopularity(product_id: number, product_amount: number) {
-        const currentPopularity = await dbConnection(
-            "SELECT popularity FROM products_table WHERE id=$1",
-            [product_id]
-        )
-        // console.log(currentPopularity)
-
-        await dbConnection(
-            "UPDATE products_table SET popularity=$1 WHERE id=$2",
-            [parseInt(String(currentPopularity.rows[0].popularity)) + 1, product_id]
-        )
-
     }
 
     // DELETE Single Product
@@ -104,13 +96,14 @@ export class OrderInfoStore {
                 "UPDATE order_info_table SET amount=$1 WHERE order_id=$2 AND product_id=$3",
                 [orderInfo.amount, orderInfo.order_id, orderInfo.product_id]
             );
+
             return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error`);
+        } catch (error: any) {
+            throw new Error(`${error.message}`);
         }
     }
 
-    // DELETE All Products In an Order
+    // DELETE ALL PRODUCTS IN AN ORDER
     async cancelPendingOrder(auth: string, order_id: number): Promise<OrderInfo[]> {
         try {
             verifyUser(auth);
@@ -133,7 +126,6 @@ export class OrderInfoStore {
     async getPendingOrder(auth: string): Promise<number | null> {
         try {
             const jwtDecoded = verifyUser(auth);
-            console.log('getting pending order')
 
             const result = await dbConnection(
                 "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",
@@ -143,8 +135,8 @@ export class OrderInfoStore {
 
             return result.rows[0].id;
         } catch (error: any) {
+            // COULD NOT RETRIEVE PENDING ORDER ON USER.
             return null;
-            //throw new Error(`Could not retrieve the pending order on user`);
         }
     }
 }
