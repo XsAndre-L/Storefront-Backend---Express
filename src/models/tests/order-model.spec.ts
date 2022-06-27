@@ -18,4 +18,12 @@ describe("Testing existance of functions in the Order model", () => {
     it("Check existance of activateOrder", () => {
         expect(orderStore.activateOrder).toBeDefined();
     });
+
+    it("Check existance of showActiveOrders", () => {
+        expect(orderStore.getOrderProducts).toBeDefined();
+    });
+
+    it("Check existance of cancelPendingOrder", () => {
+        expect(orderStore.cancelPendingOrder).toBeDefined();
+    });
 });

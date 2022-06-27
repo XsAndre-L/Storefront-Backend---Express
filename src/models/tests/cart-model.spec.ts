@@ -1,11 +1,9 @@
-import { OrderInfoStore } from "../cart-model";
+import { CartItemStore } from "../cart-model";
 
-const orderInfoStore = new OrderInfoStore();
+const orderInfoStore = new CartItemStore();
 
 describe("Testing existance of functions in the Cart model", () => {
-    it("Check existance of showActiveOrders", () => {
-        expect(orderInfoStore.getOrderProducts).toBeDefined();
-    });
+
 
     it("Check existance of addCartItem", () => {
         expect(orderInfoStore.addCartItem).toBeDefined();
@@ -19,7 +17,5 @@ describe("Testing existance of functions in the Cart model", () => {
         expect(orderInfoStore.updateCartItemAmount).toBeDefined();
     });
 
-    it("Check existance of cancelPendingOrder", () => {
-        expect(orderInfoStore.cancelPendingOrder).toBeDefined();
-    });
+
 });
