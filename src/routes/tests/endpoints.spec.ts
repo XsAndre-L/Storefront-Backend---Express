@@ -4,34 +4,37 @@ import app from "../../server";
 const st = supertest(app);
 
 // Endpoint Tests
-describe("User Endpoint Testing", () => {
+describe("Root Endpoint Testing", () => {
     it("index route should return 200 status", async () => {
         // Main EndPoint
         const response = await st.get("/");
         expect(response.status).toBe(200);
     });
+});
 
-    // USER ENDPOINT
-    it("/user/login Endpoint", async () => {
+// USER ENDPOINT
+describe("User Endpoint Testing", () => {
+    it("/user/login | Authenticate user", async () => {
         const response = await st.post("/user/login"); // get request not nessasary
         expect(response.status).toBe(200);
     });
 
-    it("/user/signup Endpoint", async () => {
+    it("/user/signup | Create new user", async () => {
         const response = await st.post("/user/signup");
         expect(response.status).toBe(200);
     });
     // ---
 });
 
+// PRODUCT ENDPOINT
 describe("Product endpoints", () => {
-    // PRODUCT ENDPOINT
     it("/product | Get all products", async () => {
         const response = await st.get("/product");
         expect(response.status).toBe(200);
     });
 
-    it("/product/ | Add new product", async () => { // Authentication Error Should Occur
+    it("/product/ | Add new product", async () => {
+        // Authentication Error Should Occur
         const response = await st.post("/product");
         expect(response.status).toBe(500);
     });
@@ -39,7 +42,13 @@ describe("Product endpoints", () => {
     // Single Product Routes
     it("/product/:id | Get product details", async () => {
         const response = await st.get("/product/1");
-        expect(response.body).toEqual({ id: 1, name: 'apple', price: 5, category: 'fruit', popularity: 0 });
+        expect(response.body).toEqual({
+            id: 1,
+            name: "apple",
+            price: 5,
+            category: "fruit",
+            popularity: 0,
+        });
     });
 
     it("/product/:id | Delete single product", async () => {

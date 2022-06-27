@@ -1,4 +1,4 @@
-import { dbConnection, verifyUser } from "../database";
+import { dbConnection } from "../database";
 
 import bcrypt from "bcrypt";
 import dotenv from "dotenv";
@@ -9,25 +9,23 @@ dotenv.config();
 const {
     BCRYPT_PASSWORD,
     HASH_ROUNDS,
-
     JWT_SIGN_TOKEN,
 } = process.env;
 
 export type User = {
     id?: number;
+    email: string;
     firstName: string;
     lastName: string;
     password: string;
 };
 
 export class UserStore {
-    async getUserDetails(auth: string): Promise<User> {
+    async getUserDetails(user_id: string): Promise<User> {
         try {
-            const decoded = verifyUser(auth); //jwt.verify(auth, String(JWT_SIGN_TOKEN));
-
             const result = await dbConnection(
                 "SELECT * FROM users_table WHERE id=$1",
-                [Object.values(decoded)[0]] // gets the id
+                [user_id]
             );
 
             return result.rows[0];
@@ -50,12 +48,13 @@ export class UserStore {
             );
 
             const result = await dbConnection(
-                "INSERT INTO users_table (firstName, lastName, password) VALUES($1,$2,$3) RETURNING id",
-                [newUser.firstName, newUser.lastName, hash]
+                "INSERT INTO users_table (email, firstName, lastName, password) VALUES($1,$2,$3,$4) RETURNING id",
+                [newUser.email, newUser.firstName, newUser.lastName, hash]
             );
 
             const jwtUser: User = {
                 id: parseInt(result.rows[0].id),
+                email: newUser.email,
                 firstName: newUser.firstName,
                 lastName: newUser.lastName,
                 password: hash,
@@ -74,8 +73,8 @@ export class UserStore {
     async authenticateUser(userDetails: User): Promise<string | null> {
         try {
             const result = await dbConnection(
-                "SELECT * FROM users_table WHERE firstName=$1 AND lastName=$2",
-                [userDetails.firstName, userDetails.lastName]
+                "SELECT * FROM users_table WHERE email=$1",
+                [userDetails.email]
             );
             if (result.rows[0] == undefined) {
                 return null;
@@ -94,7 +93,6 @@ export class UserStore {
             } else {
                 return null;
             }
-
         } catch (error) {
             throw new Error(
                 `Error while authenticating new user. | CODE : ${error}`
@@ -104,7 +102,6 @@ export class UserStore {
 
     async updateUserDetails(userDetails: User): Promise<User | null> {
         try {
-            console.log("Updating Details");
             const result = await dbConnection(
                 "UPDATE users_table SET firstName=$1, lastName=$2 WHERE id=$3",
                 [userDetails.firstName, userDetails.lastName, userDetails.id]

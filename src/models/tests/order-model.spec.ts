@@ -17,5 +17,5 @@ describe("Testing existance of functions in the Order model", () => {
 
     it("Check existance of activateOrder", () => {
         expect(orderStore.activateOrder).toBeDefined();
-    })
+    });
 });

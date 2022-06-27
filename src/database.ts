@@ -49,10 +49,12 @@ export const dbConnection = async (
     return result;
 };
 
-export const verifyUser = (auth: string | null): string | jwt.JwtPayload => {
+// Input jwtToken
+// Returns user_id
+export const verifyUser = (auth: string | null): string => {
     try {
         const verification = jwt.verify(String(auth), String(JWT_SIGN_TOKEN));
-        return verification;
+        return Object.values(verification)[0];
     } catch (error: any) {
         throw new Error(`Authentication Error`);
     }

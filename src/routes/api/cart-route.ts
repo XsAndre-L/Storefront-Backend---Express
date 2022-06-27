@@ -1,11 +1,11 @@
 import express from "express";
-import { OrderInfo, OrderInfoStore } from "../../models/cart-model";
+import { verifyUser } from "../../database";
+import { OrderInfo, CartItemStore } from "../../models/cart-model";
 import { OrderStore } from "../../models/order-model";
-
 
 const cartRoute = express.Router();
 
-const orderInfoStore = new OrderInfoStore();
+const orderInfoStore = new CartItemStore();
 const orderStore = new OrderStore();
 
 cartRoute
@@ -13,42 +13,35 @@ cartRoute
     .get(
         // GET CART CONTENTS
         async (_req: express.Request, res: express.Response): Promise<void> => {
-
             try {
-                const order_id = await orderInfoStore.getPendingOrder(
-                    String(_req.headers.authorization)
-                );
+                const user_id = verifyUser(String(_req.headers.authorization)); // Authentication
+                const order_id = await orderStore.getPendingOrder(user_id);
 
                 if (order_id != null) {
-
-                    const orderProducts = await orderInfoStore.getOrderProducts(
-                        String(_req.headers.authorization),
-                        order_id
-                    );
+                    const orderProducts = await orderStore.getOrderProducts(order_id);
                     res.send(orderProducts);
                 } else {
-                    res.send('No cart order exist');
+                    res.send("No cart order exist");
                 }
-
             } catch (error: any) {
-                res.status(500).send(error.message)
+                res.status(500).send(error.message);
             }
         }
     )
     .post(
         // ADD ITEM TOO CART
         async (_req: express.Request, res: express.Response): Promise<void> => {
-
             try {
-                let order_id = await orderInfoStore.getPendingOrder(String(_req.headers.authorization));
+                const user_id = verifyUser(String(_req.headers.authorization)); // Authentication
+                let order_id = await orderStore.getPendingOrder(user_id);
+
                 if (order_id == null) {
                     // If order does not yet exist we create it.
-                    const order = await orderStore.createOrder(String(_req.headers.authorization));
+                    const order = await orderStore.createOrder(user_id);
                     order_id = Number(order.id);
                 }
 
                 await orderInfoStore.addCartItem(
-                    String(_req.headers.authorization),
                     order_id,
                     _req.body.product_id,
                     _req.body.product_amount
@@ -63,11 +56,9 @@ cartRoute
     .put(
         // EDIT ITEM QUANTITY
         async (_req: express.Request, res: express.Response): Promise<void> => {
-
             try {
-                const order_id = await orderInfoStore.getPendingOrder(
-                    String(_req.headers.authorization)
-                );
+                const user_id = verifyUser(String(_req.headers.authorization)); // Authorization
+                const order_id = await orderStore.getPendingOrder(user_id);
 
                 if (order_id == null) {
                     res.end();
@@ -81,7 +72,6 @@ cartRoute
                 };
 
                 await orderInfoStore.updateCartItemAmount(
-                    String(_req.headers.authorization),
                     cartItem
                 );
                 res.send(`edit quantity of item: ${cartItem.product_id}`);
@@ -93,10 +83,11 @@ cartRoute
     .delete(
         // REMOVE ITEM FROM CART
         async (_req: express.Request, res: express.Response): Promise<void> => {
-
             try {
+                const user_id = verifyUser(String(_req.headers.authorization)); // Autherization
+
                 await orderInfoStore.deleteCartItem(
-                    String(_req.headers.authorization),
+                    user_id,
                     _req.body.product_id
                 );
                 res.send("remove item from cart");

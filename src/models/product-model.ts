@@ -1,4 +1,4 @@
-import { dbConnection, verifyUser } from "../database";
+import { dbConnection } from "../database";
 
 export type Product = {
     id?: number;
@@ -8,50 +8,36 @@ export type Product = {
 };
 
 export class ProductStore {
-    async getProducts(category: string | null, sort: string | null): Promise<Product[]> {
+    async getProducts(
+        category: string | null,
+        sort: string | null
+    ): Promise<Product[]> {
         // get
         try {
             let sql: string;
             let params: any;
 
-            if (category != null) {
-
-                if (sort == null) {
-
-                    sql = "SELECT * FROM products_table WHERE category=$1"
-                    params = [category];
-                } else {
-                    //sql = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM (SELECT * FROM order_info_table WHERE product_id IN (SELECT id FROM products_table WHERE category=$1)) AS my_options GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
-                    sql = "SELECT * FROM products_table WHERE category=$1 ORDER BY popularity DESC"
-                    params = [category];
-                }
-
-            } else {
-                if (sort == null) {
-
-                    sql = "SELECT * FROM products_table";
-                    params = [];
-                } else {
-                    sql = "SELECT product_id, COUNT(product_id) AS MOST_FREQUENT FROM order_info_table GROUP BY product_id ORDER BY MOST_FREQUENT DESC";
-                    params = [];
-                }
-
+            //sql = `SELECT *, (SELECT count(*) as count from order_items group by product_id WHERE product_id = p.id) as popularity from products p`;
+            sql = "SELECT * FROM products_table";
+            if (category) {
+                sql += ' WHERE category=$1'
+                params = [category];
+            }
+            if (sort == 'popularity') {
+                sql += ` ORDER BY popularity desc`;
             }
 
-            const result = await dbConnection(
-                sql,
-                params
-            );
+            const result = await dbConnection(sql, params);
 
             return result.rows;
-
         } catch (error: any) {
-            throw new Error(`Error while getting all products! ${error.message}`);
+            throw new Error(
+                `Error while getting all products! ${error.message}`
+            );
         }
     }
 
     async getProductDetails(id: string): Promise<Product> {
-        // :id get
         try {
             const result = await dbConnection(
                 "SELECT * FROM products_table WHERE id=$1",
@@ -59,17 +45,15 @@ export class ProductStore {
             );
             return result.rows[0];
         } catch (error) {
-            throw new Error(`Error when trying to retrieve Item of id : ${id}`);
+            throw new Error(`Error when retrieving Item of id : ${id}`);
         }
     }
 
-    async createProduct(auth: string, newProduct: Product): Promise<Product> {
+    async createProduct(newProduct: Product): Promise<Product> {
         // Post
         try {
-            verifyUser(auth);
-
             const result = await dbConnection(
-                "INSERT INTO products_table (name,price,category) VALUES($1,$2,$3)",
+                "INSERT INTO products_table (name,price,category,popularity) VALUES($1,$2,$3,0)",
                 [newProduct.name, newProduct.price, newProduct.category]
             );
             return result.rows[0];
@@ -80,14 +64,8 @@ export class ProductStore {
         }
     }
 
-    async updateProduct(
-        auth: string,
-        id: string,
-        updatedProduct: Product
-    ): Promise<Product> {
+    async updateProduct(id: string, updatedProduct: Product): Promise<Product> {
         try {
-            verifyUser(auth);
-
             const result = await dbConnection(
                 "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4",
                 [
@@ -104,11 +82,9 @@ export class ProductStore {
         }
     }
 
-    async delete(auth: string, id: string): Promise<Product> {
-        // delete
+    // DELETE PRODUCT
+    async delete(id: string): Promise<Product> {
         try {
-            verifyUser(auth);
-
             const result = await dbConnection(
                 "DELETE FROM products_table WHERE id=$1",
                 [id.startsWith(":") ? id.substring(1) : id]

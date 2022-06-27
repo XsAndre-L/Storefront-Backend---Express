@@ -1,5 +1,5 @@
-import { dbConnection, verifyUser } from "../database";
-import { OrderInfo, OrderInfoStore } from "./cart-model";
+import { dbConnection } from "../database";
+import { OrderInfo } from "./cart-model";
 
 export type Order = {
     id?: number;
@@ -8,16 +8,15 @@ export type Order = {
 };
 
 export class OrderStore {
-    orderInfoStore = new OrderInfoStore();
+    // orderInfoStore = new CartItemStore();
 
     // INDEX
-    async showActiveOrders(auth: string): Promise<Order[]> {
+    async showActiveOrders(user_id: string): Promise<Order[]> {
         try {
-            const decode = verifyUser(auth);
 
             const result = await dbConnection(
                 "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",
-                [Object.values(decode)[0], "Active"]
+                [user_id, "Active"]
             );
             return result.rows;
         } catch (error: any) {
@@ -27,46 +26,56 @@ export class OrderStore {
         }
     }
 
+    // ITEM INDEX
+    async getOrderProducts(
+        order_id: number
+    ): Promise<OrderInfo[]> {
+        try {
+            const result = await dbConnection(
+                "SELECT * FROM order_info_table WHERE order_id=$1",
+                [order_id]
+            );
+            return result.rows;
+        } catch (error: any) {
+            throw new Error(`Error CODE | ${error.message}`);
+        }
+    }
+
     // Create
-    async createOrder(auth: string): Promise<Order> {
+    async createOrder(user_id: string): Promise<Order> {
         // Should not be placed because order should exist while stil Pending in cart
         try {
-            const decoded = verifyUser(auth);
-            const order_id = await this.orderInfoStore.getPendingOrder(auth);
+            const order_id = await this.getPendingOrder(user_id);   // Check if there is no existing order
 
-
+            let result;
             if (order_id != null) {
-                console.log("Return already existing pending order")
-                const result = await dbConnection(
+                // If Pending order already exists return it
+                result = await dbConnection(
                     "SELECT * FROM orders_table WHERE id=$1",
                     [order_id]
-                )
-                return result.rows[0];
-
-            } else {
-                console.log(decoded);
-                const result = await dbConnection(
-                    "INSERT INTO orders_table (user_id, order_status) VALUES($1,$2) RETURNING id",
-                    [Object.values(decoded)[0], "Pending"]
                 );
-                return result.rows[0];
+            } else {
+                result = await dbConnection(
+                    "INSERT INTO orders_table (user_id, order_status) VALUES($1,$2) RETURNING id",
+                    [user_id, "Pending"]
+                );
             }
+
+            return result.rows[0];
 
         } catch (error: any) {
             throw new Error(
                 `Error while placing order for user | CODE : ${error.message}`
-            )
+            );
         }
     }
 
     // Single Order including all products
     async getOrderDetails(
-        auth: string,
         order_id: number
     ): Promise<OrderInfo[]> {
         try {
-            verifyUser(auth);
-            const result = await this.orderInfoStore.getOrderProducts(auth, order_id);
+            const result = await this.getOrderProducts(order_id);
             return result;
         } catch (error: any) {
             throw new Error(`Error while trying to retrieve order details`);
@@ -74,11 +83,9 @@ export class OrderStore {
     }
 
     // Update
-    async activateOrder(auth: string): Promise<Order | null> {
+    async activateOrder(user_id: string): Promise<Order | null> {
         try {
-            verifyUser(auth);
-            const order_id = await this.orderInfoStore.getPendingOrder(auth);
-            // console.log(order_id);
+            const order_id = await this.getPendingOrder(user_id);
             if (order_id == null) {
                 return null;
             }
@@ -89,17 +96,17 @@ export class OrderStore {
             );
 
             return result.rows[0];
-
         } catch (error: any) {
-            throw new Error(`Error while updating order | CODE : ${error.message}`);
+            throw new Error(
+                `Error while updating order | CODE : ${error.message}`
+            );
         }
     }
 
     // Delete
-    async cancelPendingOrder(auth: string): Promise<Order | null> {
+    async cancelPendingOrder(user_id: string): Promise<Order | null> {
         try {
-            const order_id = await this.orderInfoStore.getPendingOrder(auth);
-
+            const order_id = await this.getPendingOrder(user_id);
             if (order_id == null) {
                 return null;
             }
@@ -108,11 +115,38 @@ export class OrderStore {
                 "DELETE FROM orders_table WHERE id=$1",
                 [order_id]
             );
-            this.orderInfoStore.cancelPendingOrder(auth, order_id);
+            this.removeOrderItems(order_id);
             return result.rows[0];
-
         } catch (error) {
             throw new Error(`Error while canceling order`);
+        }
+    }
+
+    // DELETE ALL PRODUCTS IN AN ORDER
+    async removeOrderItems(order_id: number): Promise<OrderInfo[]> {
+        try {
+            const result = await dbConnection(
+                "DELETE FROM order_info_table WHERE order_id=$1",
+                [order_id]
+            );
+            return result.rows[0];
+        } catch (error) {
+            throw new Error(`Error`);
+        }
+    }
+
+    // Get Users Pending Order (Cart Order)
+    async getPendingOrder(user_id: string): Promise<number | null> {
+        try {
+            const result = await dbConnection(
+                "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",
+                [user_id, "Pending"]
+            );
+
+            return result.rows[0].id;
+        } catch (error: any) {
+            // COULD NOT RETRIEVE PENDING ORDER ON USER.
+            return null;
         }
     }
 }

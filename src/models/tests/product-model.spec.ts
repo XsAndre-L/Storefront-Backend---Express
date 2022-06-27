@@ -3,19 +3,19 @@ import { ProductStore } from "../product-model";
 const productStore = new ProductStore();
 
 describe("Testing existance of functions in the Product model", () => {
-    it("Check existance of getProducts", () => {
+    it("getProducts should exist", () => {
         expect(productStore.getProducts).toBeDefined();
     });
 
-    it("Check existance of getProductDetails", () => {
+    it("getProductDetails should exist", () => {
         expect(productStore.getProductDetails).toBeDefined();
     });
 
-    it("Check existance of createProduct", () => {
+    it("createProduct should exist", () => {
         expect(productStore.createProduct).toBeDefined();
     });
 
-    it("Check existance of updateProduct", () => {
+    it("updateProduct should exist", () => {
         expect(productStore.updateProduct).toBeDefined();
     });
 });
