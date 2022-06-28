@@ -20,21 +20,7 @@ const userStore = new UserStore();
 //     });
 // });
 
-// describe("user signup tests", () => {
-//     it("/user/signup | Add new user too database", async () => {
-//         const response = await userStore.createAccount({
-//             email: "jim34@gmail.com",
-//             firstName: "Jim",
-//             lastName: "Timothy",
-//             password: "randomPassword",
-//         });
-//         console.log("RESPONSE = " + response);
-
-//         expect(response).toEqual(jasmine.any(String));
-//     });
-// });
-
-describe("User Model-Tests", () => {
+describe("User Model Tests", () => {
     console.log("Userr Signup Tests");
     const testUser = {
         email: "jim34@gmail.com",
@@ -44,8 +30,8 @@ describe("User Model-Tests", () => {
     };
     // Create user no email
     it("User Signup | No Email Supplied", async (): Promise<void> => {
-        testUser.email = '';
 
+        testUser.email = '';
         try {
             await userStore.createAccount(testUser);
         } catch (error: any) {
@@ -54,9 +40,9 @@ describe("User Model-Tests", () => {
     })
     // Create user password too short
     it("User Signup | No Password Supplied", async (): Promise<void> => {
+
         testUser.password = '';
         testUser.email = "jim34@gmail.com";
-
         try {
             await userStore.createAccount(testUser);
         } catch (error: any) {
@@ -65,6 +51,7 @@ describe("User Model-Tests", () => {
     })
     // Create user with no info
     it("User Signup | No Info Supplied", async (): Promise<void> => {
+
         testUser.email = '';
         try {
             await userStore.createAccount(testUser);
@@ -74,6 +61,7 @@ describe("User Model-Tests", () => {
     })
     // Create valid user
     it("User Signup | Valid Signup", async (): Promise<void> => {
+
         testUser.email = "jim34@gmail.com";
         testUser.password = "randomPassword";
         const response = await userStore.createAccount(testUser);
@@ -89,6 +77,7 @@ describe("User Model-Tests", () => {
     })
 
     console.log("User Login Tests");
+    // Valid User Authentication
     it("User Login | Authenticate valid user", async (): Promise<void> => {
         const response = await userStore.authenticateUser({
             email: "jim34@gmail.com",
@@ -98,7 +87,7 @@ describe("User Model-Tests", () => {
         });
         expect(response).toEqual(jasmine.any(String));
     });
-
+    // Invalid User Login
     it("User Login | Authenticate invalid user", async (): Promise<void> => { // login is not dependent on firstName and lastName 
         const response = await userStore.authenticateUser({
             email: "jim3@gmail.com",
@@ -108,8 +97,7 @@ describe("User Model-Tests", () => {
         });
         expect(response).toEqual(null);
     });
-
-    // login with wrong password
+    // Login with wrong password
     it("User Login | Wrong Password", async (): Promise<void> => {
         testUser.password = "wrong password";
 

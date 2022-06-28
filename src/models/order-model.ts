@@ -21,7 +21,7 @@ export class OrderStore {
             return result.rows;
         } catch (error: any) {
             throw new Error(
-                `Error while getting Active orders on user: CODE : ${error.message}`
+                `Error while getting Active orders on user | ${error.message}`
             );
         }
     }
@@ -37,7 +37,7 @@ export class OrderStore {
             );
             return result.rows;
         } catch (error: any) {
-            throw new Error(`Error CODE | ${error.message}`);
+            throw new Error(`Error while getting order products | ${error.message}`);
         }
     }
 
@@ -65,7 +65,7 @@ export class OrderStore {
 
         } catch (error: any) {
             throw new Error(
-                `Error while placing order for user | CODE : ${error.message}`
+                `Error while placing order for user | ${error.message}`
             );
         }
     }
@@ -98,7 +98,7 @@ export class OrderStore {
             return result.rows[0];
         } catch (error: any) {
             throw new Error(
-                `Error while updating order | CODE : ${error.message}`
+                `Error while updating order | ${error.message}`
             );
         }
     }

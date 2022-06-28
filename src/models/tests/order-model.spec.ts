@@ -30,8 +30,8 @@ const orderStore = new OrderStore();
 
 describe("Order Model-Tests", () => {
     // Get User specific orders : Expect Pass
-    it("Order Model | Get user orders", () => {
-        //
+    it("Order Model | Get user orders", async () => {
+        const userOrders = await orderStore.showActiveOrders('1');
     })
     // Get Order Details : Expect Pass
     it("Order Model | Get order details", () => {

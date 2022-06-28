@@ -24,6 +24,7 @@ const productStore = new ProductStore();
 describe("Product Model-Tests", () => {
     // Test adding new product to database
     it("Create Product | Add new product", async () => {
+
         await productStore.createProduct({ name: "Pear", price: 5, category: "Fruit" });
         const getProduct = await productStore.getProductDetails('5');   // new Product added will be at id 5
         const expectedProduct = { id: 5, name: 'Pear', price: 5, category: 'Fruit', popularity: 0 };
@@ -38,12 +39,10 @@ describe("Product Model-Tests", () => {
             category: 'Fruit'
         }
         const newProduct = await productStore.updateProduct('5', product);
-
         expect(newProduct.price).toEqual(10);
     })
     // Test deleting product from database
     it("Delete Product | Delete product", async () => {
-
 
         let product = await productStore.getProductDetails('5');
         expect(product).toBeDefined();
@@ -64,8 +63,6 @@ describe("Product Model-Tests", () => {
         const filteredProducts = await productStore.getProducts('fruit', null);
         expect(filteredProducts.length).toEqual(2);
 
-        // console.log(filteredProducts);
-
     })
     // Test Sort by popularity
     it("Get Products | Sort by popularity", async () => {
@@ -76,7 +73,7 @@ describe("Product Model-Tests", () => {
         //
     })
 
-    // Get Single Product Details
+    // Get Product Details
     it("Get Product | Details of existing product", async () => {
         const apple = await productStore.getProductDetails('1');
         // console.log(apple);
@@ -84,7 +81,6 @@ describe("Product Model-Tests", () => {
         expect(apple).toEqual(shouldEqual);
 
     })
-
     // Get Invalid Product Details
     it("Get Product | Details of invalid product", async () => {
         try {
