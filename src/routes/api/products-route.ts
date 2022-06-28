@@ -98,7 +98,7 @@ productsRoute
             try {
                 verifyUser(String(_req.headers.authorization)); // Authentication
 
-                const product: Product = await productStore.delete(
+                const product: Product = await productStore.deleteProduct(
                     _req.params.id
                 );
                 res.status(200).json(product);

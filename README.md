@@ -56,7 +56,7 @@ Single Product
 `/order/:id`
 
 ### Admin Endpoints
-`/admin/
+`/admin/`
 
 ---
 

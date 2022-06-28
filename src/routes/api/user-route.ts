@@ -50,12 +50,7 @@ userRoute.route("/signup").post(
     async (_req: express.Request, res: express.Response): Promise<void> => {
 
         try {
-            if (!_req.body.email) {
-                throw new Error("No Email Specified");
-            }
-            if (!_req.body.password) {
-                throw new Error("Password Not Specified");
-            }
+
             const newUser: User = {
                 email: _req.body.email,
                 firstName: _req.body.firstName,

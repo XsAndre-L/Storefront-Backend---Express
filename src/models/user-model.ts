@@ -36,11 +36,31 @@ export class UserStore {
 
     async createAccount(newUser: User): Promise<string> {
         try {
+
+            // --- Error Handling For Account Creation
+            let errorMessage = '';
+            if (!newUser.email || String(newUser.email).length == 0) {
+                if (!newUser.password) {
+                    errorMessage = "Required fields not specified";
+                } else {
+                    errorMessage = "No Email Specified";
+                }
+            } else if (!newUser.password || !(newUser.password.length > 0)) {
+                errorMessage = "No Password Specified";
+            }
+
+            if (errorMessage.length > 0) {
+                throw new Error(errorMessage);
+            }
+
             // First try to authenticate user too see if the account does not exist
             const currAuth = await this.authenticateUser(newUser);
             if (currAuth != null) {
-                return "USER ALREADY EXISTS";
+                throw new Error("User Already Exists");
             }
+            // --- Error Handling For Account Creation
+
+
 
             const hash = bcrypt.hashSync(
                 newUser.password + BCRYPT_PASSWORD,
@@ -60,12 +80,12 @@ export class UserStore {
                 password: hash,
             };
 
-            const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN)); //verifyUser(jwtUser);
+            const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN));
 
             return String(token);
         } catch (error: any) {
             throw new Error(
-                `Could not create the new user | CODE : ${error.message}`
+                `Could not create the new user | ${error.message}`
             );
         }
     }
@@ -91,11 +111,12 @@ export class UserStore {
                 const token = jwt.sign(auth, String(JWT_SIGN_TOKEN));
                 return String(token);
             } else {
-                return null;
+                // return null;
+                throw new Error("Incorrect Password");
             }
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(
-                `Error while authenticating new user. | CODE : ${error}`
+                `Error while authenticating new user. | ${error.message}`
             );
         }
     }
@@ -109,7 +130,7 @@ export class UserStore {
             return result.rows[0];
         } catch (error: any) {
             throw new Error(
-                `Could not update user details | code: ${error.message}`
+                `Could not update user details | ${error.message}`
             );
         }
     }

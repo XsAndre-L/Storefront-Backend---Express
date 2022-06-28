@@ -41,25 +41,52 @@ export class ProductStore {
         try {
             const result = await dbConnection(
                 "SELECT * FROM products_table WHERE id=$1",
-                id.startsWith(":") ? [id.substring(1)] : [id]
+                [id]
             );
+            if (result.rows[0] == undefined) {
+                throw new Error(`No item with that id`);
+            }
             return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error when retrieving Item of id : ${id}`);
+        } catch (error: any) {
+            throw new Error(`Error when retrieving item | ${error.message}`);
         }
     }
 
     async createProduct(newProduct: Product): Promise<Product> {
         // Post
         try {
+            // Error handling
+            let errorMessage = '';
+            if (newProduct.name.length < 1) { // Maybe check for invalid characters used in product name
+                errorMessage = "Invalid Product Name";
+            }
+            else if (newProduct.price < 0) {
+                errorMessage = "Invalid Product Price";
+            }
+
+            if (errorMessage.length > 0) {
+                throw new Error(errorMessage);
+            }
+
+            // If 
+            const existanceCheck = await dbConnection(
+                "SELECT id FROM products_table WHERE name=$1",
+                [newProduct.name]
+            );
+            if (existanceCheck.rows[0] != undefined) {
+                throw new Error("Product was already added to the shop");
+            }
+            // ---
+
+
             const result = await dbConnection(
                 "INSERT INTO products_table (name,price,category,popularity) VALUES($1,$2,$3,0)",
                 [newProduct.name, newProduct.price, newProduct.category]
             );
             return result.rows[0];
-        } catch (error) {
+        } catch (error: any) {
             throw new Error(
-                `Error while Creating product : ${newProduct.name}`
+                `Error while creating product | ${error.message}`
             );
         }
     }
@@ -67,7 +94,7 @@ export class ProductStore {
     async updateProduct(id: string, updatedProduct: Product): Promise<Product> {
         try {
             const result = await dbConnection(
-                "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4",
+                "UPDATE products_table SET name=$1, price=$2, category=$3 WHERE id=$4 RETURNING *",
                 [
                     updatedProduct.name,
                     updatedProduct.price,
@@ -75,7 +102,6 @@ export class ProductStore {
                     id.startsWith(":") ? id.substring(1) : id,
                 ]
             );
-
             return result.rows[0];
         } catch (error) {
             throw new Error(`Error while Updating ${updatedProduct.name}`);
@@ -83,15 +109,19 @@ export class ProductStore {
     }
 
     // DELETE PRODUCT
-    async delete(id: string): Promise<Product> {
+    async deleteProduct(id: string): Promise<Product> {
         try {
             const result = await dbConnection(
-                "DELETE FROM products_table WHERE id=$1",
+                "DELETE FROM products_table WHERE id=$1 RETURNING *",
                 [id.startsWith(":") ? id.substring(1) : id]
             );
+            // console.log(result.rows[0])
+            if (result.rows[0] == undefined) {
+                throw new Error("Item Does Not Exist");
+            }
             return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error while Deleting product with id : ${id}`);
+        } catch (error: any) {
+            throw new Error(`Error While Removing Item | ${error.message}`);
         }
     }
 }
