@@ -18,7 +18,9 @@ cartRoute
                 const order_id = await orderStore.getPendingOrder(user_id);
 
                 if (order_id != null) {
-                    const orderProducts = await orderStore.getOrderProducts(order_id);
+                    const orderProducts = await orderStore.getOrderProducts(
+                        order_id
+                    );
                     res.send(orderProducts);
                 } else {
                     res.send("No cart order exist");
@@ -71,9 +73,7 @@ cartRoute
                     amount: _req.body.productAmount,
                 };
 
-                await orderInfoStore.updateCartItemAmount(
-                    cartItem
-                );
+                await orderInfoStore.updateCartItemAmount(cartItem);
                 res.send(`edit quantity of item: ${cartItem.product_id}`);
             } catch (error: any) {
                 res.status(500).send(error.message);

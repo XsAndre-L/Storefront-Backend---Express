@@ -48,9 +48,7 @@ userRoute
 userRoute.route("/signup").post(
     // CREATE NEW USER
     async (_req: express.Request, res: express.Response): Promise<void> => {
-
         try {
-
             const newUser: User = {
                 email: _req.body.email,
                 firstName: _req.body.firstName,

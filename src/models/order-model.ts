@@ -4,16 +4,15 @@ import { OrderInfo } from "./cart-model";
 export type Order = {
     id?: number;
     user_id: number;
-    status: string;
+    order_status: string;
 };
 
 export class OrderStore {
     // orderInfoStore = new CartItemStore();
 
     // INDEX
-    async showActiveOrders(user_id: string): Promise<Order[]> {
+    async showActiveOrders(user_id: number): Promise<Order[]> {
         try {
-
             const result = await dbConnection(
                 "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",
                 [user_id, "Active"]
@@ -27,9 +26,7 @@ export class OrderStore {
     }
 
     // ITEM INDEX
-    async getOrderProducts(
-        order_id: number
-    ): Promise<OrderInfo[]> {
+    async getOrderProducts(order_id: number): Promise<OrderInfo[]> {
         try {
             const result = await dbConnection(
                 "SELECT * FROM order_info_table WHERE order_id=$1",
@@ -37,15 +34,17 @@ export class OrderStore {
             );
             return result.rows;
         } catch (error: any) {
-            throw new Error(`Error while getting order products | ${error.message}`);
+            throw new Error(
+                `Error while getting order products | ${error.message}`
+            );
         }
     }
 
     // Create
-    async createOrder(user_id: string): Promise<Order> {
+    async createOrder(user_id: number): Promise<Order> {
         // Should not be placed because order should exist while stil Pending in cart
         try {
-            const order_id = await this.getPendingOrder(user_id);   // Check if there is no existing order
+            const order_id = await this.getPendingOrder(user_id); // Check if there is no existing order
 
             let result;
             if (order_id != null) {
@@ -62,7 +61,6 @@ export class OrderStore {
             }
 
             return result.rows[0];
-
         } catch (error: any) {
             throw new Error(
                 `Error while placing order for user | ${error.message}`
@@ -71,9 +69,7 @@ export class OrderStore {
     }
 
     // Single Order including all products
-    async getOrderDetails(
-        order_id: number
-    ): Promise<OrderInfo[]> {
+    async getOrderDetails(order_id: number): Promise<OrderInfo[]> {
         try {
             const result = await this.getOrderProducts(order_id);
             return result;
@@ -83,7 +79,7 @@ export class OrderStore {
     }
 
     // Update
-    async activateOrder(user_id: string): Promise<Order | null> {
+    async activateOrder(user_id: number): Promise<Order | null> {
         try {
             const order_id = await this.getPendingOrder(user_id);
             if (order_id == null) {
@@ -91,34 +87,33 @@ export class OrderStore {
             }
 
             const result = await dbConnection(
-                "UPDATE orders_table SET order_status=$1 WHERE id=$2",
+                "UPDATE orders_table SET order_status=$1 WHERE id=$2 RETURNING id, user_id, order_status",
                 ["Active", order_id]
             );
 
             return result.rows[0];
         } catch (error: any) {
-            throw new Error(
-                `Error while updating order | ${error.message}`
-            );
+            throw new Error(`Error while updating order | ${error.message}`);
         }
     }
 
     // Delete
-    async cancelPendingOrder(user_id: string): Promise<Order | null> {
+    async cancelPendingOrder(user_id: number): Promise<Order | null> {
         try {
             const order_id = await this.getPendingOrder(user_id);
             if (order_id == null) {
                 return null;
             }
 
+            await this.removeOrderItems(order_id);
+
             const result = await dbConnection(
-                "DELETE FROM orders_table WHERE id=$1",
+                "DELETE FROM orders_table WHERE id=$1 RETURNING *",
                 [order_id]
             );
-            this.removeOrderItems(order_id);
             return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error while canceling order`);
+        } catch (error: any) {
+            throw new Error(`Error while canceling order | ${error.message}`);
         }
     }
 
@@ -130,13 +125,13 @@ export class OrderStore {
                 [order_id]
             );
             return result.rows[0];
-        } catch (error) {
-            throw new Error(`Error`);
+        } catch (error: any) {
+            throw new Error(error.message);
         }
     }
 
     // Get Users Pending Order (Cart Order)
-    async getPendingOrder(user_id: string): Promise<number | null> {
+    async getPendingOrder(user_id: number): Promise<number | null> {
         try {
             const result = await dbConnection(
                 "SELECT * FROM orders_table WHERE user_id=$1 AND order_status=$2",

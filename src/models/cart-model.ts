@@ -26,10 +26,13 @@ export class CartItemStore {
             if (existanceCheck.rows[0] != undefined) {
                 throw new Error("Product was already added to this cart!");
             }
+
+            // Check if the specified product exists
+            await this.checkProductExistence(product_id);
             // ---
 
             const result = await dbConnection(
-                "INSERT INTO order_info_table (order_id, product_id, amount) VALUES($1,$2,$3)",
+                "INSERT INTO order_info_table (order_id, product_id, amount) VALUES($1,$2,$3) RETURNING *",
                 [order_id, product_id, productAmount]
             );
 
@@ -45,12 +48,12 @@ export class CartItemStore {
     }
 
     // EDIT
-    async updateCartItemAmount(
-        orderInfo: OrderInfo
-    ): Promise<OrderInfo> {
+    async updateCartItemAmount(orderInfo: OrderInfo): Promise<OrderInfo> {
         try {
+            await this.checkProductExistence(orderInfo.product_id);
+
             const result = await dbConnection(
-                "UPDATE order_info_table SET amount=$1 WHERE order_id=$2 AND product_id=$3",
+                "UPDATE order_info_table SET amount=$1 WHERE order_id=$2 AND product_id=$3 RETURNING *",
                 [orderInfo.amount, orderInfo.order_id, orderInfo.product_id]
             );
 
@@ -62,19 +65,34 @@ export class CartItemStore {
 
     // DELETE Single Product
     async deleteCartItem(
-        user_id: string,
+        user_id: number,
         product_id: number
     ): Promise<OrderInfo> {
         try {
+            // Check if the specified product exists
+            await this.checkProductExistence(product_id);
+            // ---
+
             const order_id = await this.orderStore.getPendingOrder(user_id);
 
             const result = await dbConnection(
-                "DELETE FROM order_info_table WHERE order_id=$1 AND product_id=$2",
+                "DELETE FROM order_info_table WHERE order_id=$1 AND product_id=$2 RETURNING *",
                 [order_id, product_id]
             );
             return result.rows[0];
-        } catch (error) {
-            throw new Error(`${error}`);
+        } catch (error: any) {
+            throw new Error(`${error.message}`);
+        }
+    }
+
+    async checkProductExistence(product_id: number): Promise<void> {
+        const productExistance = await dbConnection(
+            "SELECT * FROM products_table WHERE id=$1",
+            [product_id]
+        );
+
+        if (productExistance.rows[0] == undefined) {
+            throw new Error("Product does not exist");
         }
     }
 }

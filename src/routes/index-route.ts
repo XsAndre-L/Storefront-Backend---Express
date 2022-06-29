@@ -1,4 +1,5 @@
 import express from "express";
+import adminRoute from "./api/admin-route";
 import cartRoute from "./api/cart-route";
 import ordersRoute from "./api/orders-route";
 import productsRoute from "./api/products-route";
@@ -15,6 +16,7 @@ mainRoute.use("/product", productsRoute);
 mainRoute.use("/user", usersRoute);
 mainRoute.use("/cart", cartRoute);
 mainRoute.use("/order", ordersRoute);
+mainRoute.use("/admin", adminRoute);
 
 mainRoute.get("*", (_req: express.Request, res: express.Response) => {
     res.status(404).send("Missing Endpoint");

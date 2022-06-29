@@ -12,8 +12,8 @@ describe("Root Endpoint Testing", () => {
     });
 
     // Unknown Route
-    it('Unknown Route /wrongroute', async (): Promise<void> => {
-        const response = await st.get('/wrongroute');
+    it("Unknown Route /wrongroute", async (): Promise<void> => {
+        const response = await st.get("/wrongroute");
         expect(response.status).toBe(404);
     });
 });

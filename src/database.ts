@@ -51,7 +51,7 @@ export const dbConnection = async (
 
 // Input jwtToken
 // Returns user_id
-export const verifyUser = (auth: string | null): string => {
+export const verifyUser = (auth: string | null): number => {
     try {
         const verification = jwt.verify(String(auth), String(JWT_SIGN_TOKEN));
         return Object.values(verification)[0];

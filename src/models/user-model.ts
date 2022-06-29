@@ -6,11 +6,7 @@ import jwt from "jsonwebtoken";
 
 dotenv.config();
 
-const {
-    BCRYPT_PASSWORD,
-    HASH_ROUNDS,
-    JWT_SIGN_TOKEN,
-} = process.env;
+const { BCRYPT_PASSWORD, HASH_ROUNDS, JWT_SIGN_TOKEN } = process.env;
 
 export type User = {
     id?: number;
@@ -21,7 +17,23 @@ export type User = {
 };
 
 export class UserStore {
-    async getUserDetails(user_id: string): Promise<User> {
+
+    async getUsers(): Promise<User[]> {
+        try {
+
+            const result = await dbConnection(
+                "SELECT * FROM users_table",
+                []
+            );
+
+            return result.rows;
+
+        } catch (error: any) {
+            throw new Error(error.message);
+        }
+    }
+
+    async getUserDetails(user_id: number): Promise<User> {
         try {
             const result = await dbConnection(
                 "SELECT * FROM users_table WHERE id=$1",
@@ -36,9 +48,8 @@ export class UserStore {
 
     async createAccount(newUser: User): Promise<string> {
         try {
-
             // --- Error Handling For Account Creation
-            let errorMessage = '';
+            let errorMessage = "";
             if (!newUser.email || String(newUser.email).length == 0) {
                 if (!newUser.password) {
                     errorMessage = "Required fields not specified";
@@ -60,16 +71,19 @@ export class UserStore {
             }
             // --- Error Handling For Account Creation
 
-
-
             const hash = bcrypt.hashSync(
                 newUser.password + BCRYPT_PASSWORD,
                 parseInt(String(HASH_ROUNDS))
             );
 
+            let role = "member";
+            if (newUser.email.includes("@organisation.com")) {
+                role = "admin";
+            }
+
             const result = await dbConnection(
-                "INSERT INTO users_table (email, firstName, lastName, password) VALUES($1,$2,$3,$4) RETURNING id",
-                [newUser.email, newUser.firstName, newUser.lastName, hash]
+                "INSERT INTO users_table (email, firstName, lastName, password, role) VALUES($1,$2,$3,$4,$5) RETURNING id",
+                [newUser.email, newUser.firstName, newUser.lastName, hash, role]
             );
 
             const jwtUser: User = {
@@ -84,9 +98,7 @@ export class UserStore {
 
             return String(token);
         } catch (error: any) {
-            throw new Error(
-                `Could not create the new user | ${error.message}`
-            );
+            throw new Error(`Could not create the new user | ${error.message}`);
         }
     }
 
@@ -129,9 +141,7 @@ export class UserStore {
             );
             return result.rows[0];
         } catch (error: any) {
-            throw new Error(
-                `Could not update user details | ${error.message}`
-            );
+            throw new Error(`Could not update user details | ${error.message}`);
         }
     }
 }

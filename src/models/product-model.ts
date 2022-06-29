@@ -20,10 +20,10 @@ export class ProductStore {
             //sql = `SELECT *, (SELECT count(*) as count from order_items group by product_id WHERE product_id = p.id) as popularity from products p`;
             sql = "SELECT * FROM products_table";
             if (category) {
-                sql += ' WHERE category=$1'
+                sql += " WHERE category=$1";
                 params = [category];
             }
-            if (sort == 'popularity') {
+            if (sort == "popularity") {
                 sql += ` ORDER BY popularity desc`;
             }
 
@@ -56,11 +56,11 @@ export class ProductStore {
         // Post
         try {
             // Error handling
-            let errorMessage = '';
-            if (newProduct.name.length < 1) { // Maybe check for invalid characters used in product name
+            let errorMessage = "";
+            if (newProduct.name.length < 1) {
+                // Maybe check for invalid characters used in product name
                 errorMessage = "Invalid Product Name";
-            }
-            else if (newProduct.price < 0) {
+            } else if (newProduct.price < 0) {
                 errorMessage = "Invalid Product Price";
             }
 
@@ -68,7 +68,7 @@ export class ProductStore {
                 throw new Error(errorMessage);
             }
 
-            // If 
+            // If
             const existanceCheck = await dbConnection(
                 "SELECT id FROM products_table WHERE name=$1",
                 [newProduct.name]
@@ -78,16 +78,13 @@ export class ProductStore {
             }
             // ---
 
-
             const result = await dbConnection(
                 "INSERT INTO products_table (name,price,category,popularity) VALUES($1,$2,$3,0)",
                 [newProduct.name, newProduct.price, newProduct.category]
             );
             return result.rows[0];
         } catch (error: any) {
-            throw new Error(
-                `Error while creating product | ${error.message}`
-            );
+            throw new Error(`Error while creating product | ${error.message}`);
         }
     }
 

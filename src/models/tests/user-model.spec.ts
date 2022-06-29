@@ -30,51 +30,55 @@ describe("User Model Tests", () => {
     };
     // Create user no email
     it("User Signup | No Email Supplied", async (): Promise<void> => {
-
-        testUser.email = '';
+        testUser.email = "";
         try {
             await userStore.createAccount(testUser);
         } catch (error: any) {
-            expect(error.message).toEqual('Could not create the new user | No Email Specified')
+            expect(error.message).toEqual(
+                "Could not create the new user | No Email Specified"
+            );
         }
-    })
+    });
     // Create user password too short
     it("User Signup | No Password Supplied", async (): Promise<void> => {
-
-        testUser.password = '';
+        testUser.password = "";
         testUser.email = "jim34@gmail.com";
         try {
             await userStore.createAccount(testUser);
         } catch (error: any) {
-            expect(error.message).toEqual("Could not create the new user | No Password Specified");
+            expect(error.message).toEqual(
+                "Could not create the new user | No Password Specified"
+            );
         }
-    })
+    });
     // Create user with no info
     it("User Signup | No Info Supplied", async (): Promise<void> => {
-
-        testUser.email = '';
+        testUser.email = "";
         try {
             await userStore.createAccount(testUser);
         } catch (error: any) {
-            expect(error.message).toEqual("Could not create the new user | Required fields not specified")
+            expect(error.message).toEqual(
+                "Could not create the new user | Required fields not specified"
+            );
         }
-    })
+    });
     // Create valid user
     it("User Signup | Valid Signup", async (): Promise<void> => {
-
         testUser.email = "jim34@gmail.com";
         testUser.password = "randomPassword";
         const response = await userStore.createAccount(testUser);
         expect(response).toEqual(jasmine.any(String));
-    })
+    });
     // Create Duplicate User
     it("User Signup | Duplicate User", async (): Promise<void> => {
         try {
             await userStore.createAccount(testUser);
         } catch (error: any) {
-            expect(error.message).toEqual("Could not create the new user | User Already Exists")
+            expect(error.message).toEqual(
+                "Could not create the new user | User Already Exists"
+            );
         }
-    })
+    });
 
     console.log("User Login Tests");
     // Valid User Authentication
@@ -88,7 +92,8 @@ describe("User Model Tests", () => {
         expect(response).toEqual(jasmine.any(String));
     });
     // Invalid User Login
-    it("User Login | Authenticate invalid user", async (): Promise<void> => { // login is not dependent on firstName and lastName 
+    it("User Login | Authenticate invalid user", async (): Promise<void> => {
+        // login is not dependent on firstName and lastName
         const response = await userStore.authenticateUser({
             email: "jim3@gmail.com",
             firstName: "NA",
@@ -104,7 +109,9 @@ describe("User Model Tests", () => {
         try {
             await userStore.authenticateUser(testUser);
         } catch (error: any) {
-            expect(error.message).toEqual("Error while authenticating new user. | Incorrect Password");
+            expect(error.message).toEqual(
+                "Error while authenticating new user. | Incorrect Password"
+            );
         }
-    })
+    });
 });
