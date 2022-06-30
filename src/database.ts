@@ -40,8 +40,8 @@ if (ENV === "dev") {
 // FUNCTION TO CONNECT, QUERY AND DISCONNECT DATABASE
 export const dbConnection = async (
     sql: string,
-    sqlInput: any[]
-): Promise<QueryResult<any>> => {
+    sqlInput: any   // the use of any is required in this case to be able to handle any data type.
+): Promise<QueryResult<any>> => {   // QueryResult<any> is the type returned by the database
     const conn = await database.connect();
     const result = await conn.query(sql, sqlInput);
     conn.release();
@@ -55,7 +55,7 @@ export const verifyUser = (auth: string | null): number => {
     try {
         const verification = jwt.verify(String(auth), String(JWT_SIGN_TOKEN));
         return Object.values(verification)[0];
-    } catch (error: any) {
+    } catch (error) {
         throw new Error(`Authentication Error`);
     }
 };

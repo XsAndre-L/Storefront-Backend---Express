@@ -56,8 +56,8 @@ describe("Product Model-Tests", () => {
 
         try {
             product = await productStore.getProductDetails("5");
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Error when retrieving item | No item with that id"
             );
         }
@@ -93,8 +93,8 @@ describe("Product Model-Tests", () => {
     it("Get Product | Details of invalid product", async () => {
         try {
             await productStore.getProductDetails("50");
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Error when retrieving item | No item with that id"
             );
         }
@@ -106,8 +106,8 @@ describe("Product Model-Tests", () => {
         product.name = "";
         try {
             await productStore.createProduct(product);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Error while creating product | Invalid Product Name"
             );
         }
@@ -116,8 +116,8 @@ describe("Product Model-Tests", () => {
     it("Product Model | Remove Invalid Product", async () => {
         try {
             await productStore.deleteProduct("50");
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Error While Removing Item | Item Does Not Exist"
             );
         }
@@ -127,8 +127,10 @@ describe("Product Model-Tests", () => {
         try {
             const product = { name: "any", price: 5, category: "any" };
             await productStore.updateProduct("50", product);
-        } catch (error: any) {
-            expect(error.message).toEqual("Error while updating product | ");
+        } catch (error) {
+            expect((error as Error).message).toEqual(
+                "Error while updating product | "
+            );
         }
     });
     // Add Duplicate Product
@@ -137,8 +139,8 @@ describe("Product Model-Tests", () => {
         try {
             await productStore.createProduct(product);
             await productStore.createProduct(product);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Error while creating product | Product was already added to the shop"
             );
         }

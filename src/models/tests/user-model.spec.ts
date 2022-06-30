@@ -33,8 +33,8 @@ describe("User Model Tests", () => {
         testUser.email = "";
         try {
             await userStore.createAccount(testUser);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Could not create the new user | No Email Specified"
             );
         }
@@ -45,8 +45,8 @@ describe("User Model Tests", () => {
         testUser.email = "jim34@gmail.com";
         try {
             await userStore.createAccount(testUser);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Could not create the new user | No Password Specified"
             );
         }
@@ -56,8 +56,8 @@ describe("User Model Tests", () => {
         testUser.email = "";
         try {
             await userStore.createAccount(testUser);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Could not create the new user | Required fields not specified"
             );
         }
@@ -73,8 +73,8 @@ describe("User Model Tests", () => {
     it("User Signup | Duplicate User", async (): Promise<void> => {
         try {
             await userStore.createAccount(testUser);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Could not create the new user | User Already Exists"
             );
         }
@@ -108,8 +108,8 @@ describe("User Model Tests", () => {
 
         try {
             await userStore.authenticateUser(testUser);
-        } catch (error: any) {
-            expect(error.message).toEqual(
+        } catch (error) {
+            expect((error as Error).message).toEqual(
                 "Error while authenticating new user. | Incorrect Password"
             );
         }

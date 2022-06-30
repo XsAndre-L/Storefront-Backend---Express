@@ -1,19 +1,25 @@
 import { dbConnection, verifyUser } from "../database";
-import { OrderStore } from "./order-model";
+// import { OrderStore } from "./order-model";
 
 export class AdminInterface {
     async adminCheck(user_id: number): Promise<boolean> {
-        const result = await dbConnection(
-            "SELECT role FROM users_table WHERE id=$1",
-            [user_id]
-        );
+        try {
+            const result = await dbConnection(
+                "SELECT role FROM users_table WHERE id=$1",
+                [user_id]
+            );
 
-        console.log(result.rows[0].role);
+            console.log(result.rows[0].role);
 
-        if (result.rows[0].role == 'admin') {
-            return true;
-        } else {
-            return false;
+            if (result.rows[0].role == "admin") {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (error) {
+            throw new Error(
+                `Error while checking admin | ${(error as Error).message}`
+            );
         }
     }
 

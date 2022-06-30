@@ -25,8 +25,8 @@ cartRoute
                 } else {
                     res.send("No cart order exist");
                 }
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -50,8 +50,8 @@ cartRoute
                 );
 
                 res.send("Added item too cart");
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -75,8 +75,8 @@ cartRoute
 
                 await orderInfoStore.updateCartItemAmount(cartItem);
                 res.send(`edit quantity of item: ${cartItem.product_id}`);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -91,8 +91,8 @@ cartRoute
                     _req.body.product_id
                 );
                 res.send("remove item from cart");
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     );

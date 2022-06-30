@@ -18,8 +18,8 @@ ordersRoute
                     user_id // gets user id
                 );
                 res.status(200).json(result);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -31,8 +31,8 @@ ordersRoute
 
                 const result = await orderStore.createOrder(user_id);
                 res.status(200).send(result);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -44,26 +44,28 @@ ordersRoute
 
                 const result = await orderStore.activateOrder(user_id);
                 res.status(200).send(result);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     );
 
-ordersRoute.route("/:id").get(
-    // SPICIFIC ORDER INFO
-    async (_req: express.Request, res: express.Response): Promise<void> => {
-        try {
-            verifyUser(String(_req.headers.authorization)); // Autherization
+ordersRoute
+    .route("/:id")
+    .get(
+        // SPICIFIC ORDER INFO
+        async (_req: express.Request, res: express.Response): Promise<void> => {
+            try {
+                verifyUser(String(_req.headers.authorization)); // Autherization
 
-            const order = await orderStore.getOrderDetails(
-                parseInt(_req.params.id)
-            );
-            res.status(200).json(order);
-        } catch (error: any) {
-            res.status(500).send(error.message);
+                const order = await orderStore.getOrderDetails(
+                    parseInt(_req.params.id)
+                );
+                res.status(200).json(order);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
+            }
         }
-    }
-);
+    );
 
 export default ordersRoute;

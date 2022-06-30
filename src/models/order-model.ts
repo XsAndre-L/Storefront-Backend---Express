@@ -18,9 +18,11 @@ export class OrderStore {
                 [user_id, "Active"]
             );
             return result.rows;
-        } catch (error: any) {
+        } catch (error) {
             throw new Error(
-                `Error while getting Active orders on user | ${error.message}`
+                `Error while getting Active orders on user | ${
+                    (error as Error).message
+                }`
             );
         }
     }
@@ -33,9 +35,11 @@ export class OrderStore {
                 [order_id]
             );
             return result.rows;
-        } catch (error: any) {
+        } catch (error) {
             throw new Error(
-                `Error while getting order products | ${error.message}`
+                `Error while getting order products | ${
+                    (error as Error).message
+                }`
             );
         }
     }
@@ -61,9 +65,11 @@ export class OrderStore {
             }
 
             return result.rows[0];
-        } catch (error: any) {
+        } catch (error) {
             throw new Error(
-                `Error while placing order for user | ${error.message}`
+                `Error while placing order for user | ${
+                    (error as Error).message
+                }`
             );
         }
     }
@@ -73,8 +79,12 @@ export class OrderStore {
         try {
             const result = await this.getOrderProducts(order_id);
             return result;
-        } catch (error: any) {
-            throw new Error(`Error while trying to retrieve order details`);
+        } catch (error) {
+            throw new Error(
+                `Error while trying to retrieve order details | ${
+                    (error as Error).message
+                }`
+            );
         }
     }
 
@@ -92,8 +102,10 @@ export class OrderStore {
             );
 
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`Error while updating order | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Error while updating order | ${(error as Error).message}`
+            );
         }
     }
 
@@ -112,8 +124,10 @@ export class OrderStore {
                 [order_id]
             );
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`Error while canceling order | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Error while canceling order | ${(error as Error).message}`
+            );
         }
     }
 
@@ -125,8 +139,8 @@ export class OrderStore {
                 [order_id]
             );
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(error.message);
+        } catch (error) {
+            throw new Error((error as Error).message);
         }
     }
 
@@ -139,7 +153,7 @@ export class OrderStore {
             );
 
             return result.rows[0].id;
-        } catch (error: any) {
+        } catch (error) {
             // COULD NOT RETRIEVE PENDING ORDER ON USER.
             return null;
         }

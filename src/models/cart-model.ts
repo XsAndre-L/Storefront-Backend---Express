@@ -42,8 +42,8 @@ export class CartItemStore {
             );
 
             return result.rows;
-        } catch (error: any) {
-            throw new Error(`${error.message}`);
+        } catch (error) {
+            throw new Error(`${(error as Error).message}`);
         }
     }
 
@@ -58,8 +58,8 @@ export class CartItemStore {
             );
 
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`${error.message}`);
+        } catch (error) {
+            throw new Error(`${(error as Error).message}`);
         }
     }
 
@@ -80,8 +80,8 @@ export class CartItemStore {
                 [order_id, product_id]
             );
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`${error.message}`);
+        } catch (error) {
+            throw new Error(`${(error as Error).message}`);
         }
     }
 

@@ -1,95 +1,131 @@
 # REQUIREMENTS
 
 ## User Endpoint
+Endpoint: `/user`  
+✉️ Requests:
+- `[Get]`   
+    - Returns: `User[]`
+- `[Put]`  
+    - Input: `{
+        "firstName" : "",
+        "lastNamee" : ""
+    }`
+    - Returns: `User`  
+
 ### Create New User
 Endpoint: `/user/signup`  
-Requests: 
-- `[ Post ]`  
-Input: `{  
+✉️ Requests: 
+- `[Post]`  
+    - Input: `{  
     "email": "",
     "firstName": "",
     "lastName": "",
     "password": ""
 }`  
-Returns: `JWT`
+    - Returns: `JWT`
 
 ### Authenticate Existing User
 Endpoint: `/user/login`    
-Requests: 
-- `[ Post ]`  
-Input: `{  
+✉️ Requests: 
+- `[Post]`  
+    - Input: `{  
     "email": "",   
     "password": ""  
 }`  
-Returns: `JWT`
+    - Returns: `JWT`
 
-### User Data Shapes
+### 📉 User Data Shapes
 Table Name : `users_table`  
-Columns : `id | firstName | lastName | password`  
+Columns : `id | email | firstName | lastName | password | role`  
 
 ---
 
 ## Product Endpoint
-#### All Products
+### All Products
 Endpoint: `/product`       
-Requests: 
+✉️ Requests: 
 - `[Get]`  
-Returns: `Product[]`  
+    - Returns: `Product[]`  
+- `[Post]`  ✅Auth  
+    - Body: `{  
+    "name" : "",  
+    "price" : "",  
+    "category" : ""  
+}`  
 
-#### Products By Category
-Endpoint: `/product/?category="A CATEGORY"`    
-Requests: 
+Endpoint: `/product/?category=fruit`    
+✉️ Requests: 
 - `[Get]`  
-Returns: `Product[]`  
+    - Returns: `Product[]`  
 
-#### Product Details
+Endpoint: `/product/?sort=popularity`  
+- `[Get]`  
+    - Returns: `Product[]`
+
+## Product Details Endpoint
 Endpoint: `/product/:id`   
-Requests: 
+✉️ Requests: 
 - `[Get]`   
-Returns: `Product`
+    - Returns: `Product`
+- `[Put]`  
+    - Body: `{  
+    "name" : "",  
+    "price" : "",  
+    "category" : ""  
+}`  
+    - Returns: `Product`  
+- `[Delete]`  
+    - Returns: `Product`   
 
-- `[Post]`  
-Body: `{
-    "name" : "",
-    "price" : "",
-    "category" : ""
-}`
 
-### Product Data Shapes
-Table Name : products_table  
-Columns : id | name | price | category
+### 📉 Product Data Shapes
+Table Name : `products_table`  
+Columns : `id | name | price | category | popularity`
 
 
 ---
-### Order Endpoint
-#### User Orders
-Endpoint: /order         
-Requests:
-- `[Get]`   
-Returns: Order[]  
+## Order Endpoint
+### User Orders
+Endpoint: `/order`         
+✉️ Requests:
+- `[Get]`   ✅Auth  
+    - Returns: `Order[]`  
 
-- `[Post]`  
-Input: {}
+- `[Post]`  ✅Auth  
+    - Input: {none}
 
-#### /order/:id     [Get]    // Check if order belongs too user
-Returns: Order  
+- `[Put]` ✅Auth
+    - Input: {none}
 
+### /order/:id     
+- `[Get]`   ✅Auth  
+    - Returns: `Order`  
+
+### 📉 Order Data Shapes
+Table Name : `orders_table`  
+Columns : `id | user_id | order_status`
 
 ---
-### Cart Endpoint
+## Cart Endpoint
+### User Cart
 Endpoint: `/cart`  
-Requests: 
-- `[Get]`  Auth     
-Returns: `Products[]`
+✉️ Requests: 
+- `[Get]`  ✅Auth       
+    - Returns: `Products[]`
 
-- `[Post]` Auth     
-Input: {
+- `[Post]` ✅Auth       
+    - Input: `{
     product_id,
     product_amount
-}  
+}`  
 
-- `[Delete]`  Auth  
-Return: 
+- `[Put]`   ✅Auth    
+    - Return: `Product`
 
-- `[Put]`   Auth  
-Return:
+- `[Delete]`  ✅Auth    
+    - Return: `Product`
+
+
+### 📉 OrderInfo Data Shape
+Table Name : `order_info_table`  
+Columns : `id | order_id | product_id | amount`

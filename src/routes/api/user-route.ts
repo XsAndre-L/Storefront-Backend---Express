@@ -18,29 +18,29 @@ userRoute
                     user_id // gets the Id form spicific user
                 );
                 res.json(result);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
     .put(
         // UPDATE USER DETAILS
         async (_req: express.Request, res: express.Response): Promise<void> => {
-            const user: User = {
-                id: _req.body.id,
-                email: "NA",
-                firstName: _req.body.firstName,
-                lastName: _req.body.lastName,
-                password: "NA",
-            };
 
             try {
-                verifyUser(String(_req.headers.authorization));
+                const user_id = verifyUser(String(_req.headers.authorization));
+                const user: User = {
+                    id: user_id,
+                    email: "NA",
+                    firstName: _req.body.firstName,
+                    lastName: _req.body.lastName,
+                    password: "NA",
+                };
 
                 const result = await userStore.updateUserDetails(user);
                 res.send(result);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     );
@@ -58,8 +58,8 @@ userRoute.route("/signup").post(
         try {
             const result = await userStore.createAccount(newUser); // Should only be successfull if user does not exist
             res.status(200).json(result);
-        } catch (error: any) {
-            res.status(500).send(error.message);
+        } catch (error) {
+            res.status(500).send((error as Error).message);
         }
     }
 );
@@ -77,8 +77,8 @@ userRoute.route("/login").post(
         try {
             const result = await userStore.authenticateUser(userDetails);
             res.status(200).send(result);
-        } catch (error: any) {
-            res.status(500).send(error.message);
+        } catch (error) {
+            res.status(500).send((error as Error).message);
         }
     }
 );

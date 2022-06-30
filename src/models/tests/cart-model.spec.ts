@@ -7,7 +7,6 @@ const orderStore = new OrderStore();
 const userStore = new UserStore();
 
 describe("Testing existance of functions in the Cart model", () => {
-
     it("Check existance of addCartItem", () => {
         expect(cartItemStore.addCartItem).toBeDefined();
     });
@@ -19,7 +18,6 @@ describe("Testing existance of functions in the Cart model", () => {
     it("Check existance of updateCartItemAmount", () => {
         expect(cartItemStore.updateCartItemAmount).toBeDefined();
     });
-
 });
 
 describe("Cart Model Tests", () => {
@@ -78,8 +76,8 @@ describe("Cart Model Tests", () => {
     it("Cart Model | Add invalid item", async (): Promise<void> => {
         try {
             await cartItemStore.addCartItem(1, 50, 1);
-        } catch (error: any) {
-            expect(error.message).toEqual("Product does not exist");
+        } catch (error) {
+            expect((error as Error).message).toEqual("Product does not exist");
         }
     });
     // Update invalid Item : Expect Error
@@ -91,16 +89,16 @@ describe("Cart Model Tests", () => {
                 amount: 2,
             };
             await cartItemStore.updateCartItemAmount(orderInfo);
-        } catch (error: any) {
-            expect(error.message).toEqual("Product does not exist");
+        } catch (error) {
+            expect((error as Error).message).toEqual("Product does not exist");
         }
     });
     // remove invalid Item : Expect Error
     it("Cart Model | Remove invalid item", async (): Promise<void> => {
         try {
             await cartItemStore.deleteCartItem(1, 50);
-        } catch (error: any) {
-            expect(error.message).toEqual("Product does not exist");
+        } catch (error) {
+            expect((error as Error).message).toEqual("Product does not exist");
         }
     });
     //

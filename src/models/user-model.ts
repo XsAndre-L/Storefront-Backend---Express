@@ -17,20 +17,14 @@ export type User = {
 };
 
 export class UserStore {
-
     // ADMIN ONLY GET ALL USERS
     async getUsers(): Promise<User[]> {
         try {
-
-            const result = await dbConnection(
-                "SELECT * FROM users_table",
-                []
-            );
+            const result = await dbConnection("SELECT * FROM users_table", []);
 
             return result.rows;
-
-        } catch (error: any) {
-            throw new Error(error.message);
+        } catch (error) {
+            throw new Error((error as Error).message);
         }
     }
 
@@ -98,8 +92,10 @@ export class UserStore {
             const token = jwt.sign(jwtUser, String(JWT_SIGN_TOKEN));
 
             return String(token);
-        } catch (error: any) {
-            throw new Error(`Could not create the new user | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Could not create the new user | ${(error as Error).message}`
+            );
         }
     }
 
@@ -127,9 +123,11 @@ export class UserStore {
                 // return null;
                 throw new Error("Incorrect Password");
             }
-        } catch (error: any) {
+        } catch (error) {
             throw new Error(
-                `Error while authenticating new user. | ${error.message}`
+                `Error while authenticating new user. | ${
+                    (error as Error).message
+                }`
             );
         }
     }
@@ -141,8 +139,10 @@ export class UserStore {
                 [userDetails.firstName, userDetails.lastName, userDetails.id]
             );
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`Could not update user details | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Could not update user details | ${(error as Error).message}`
+            );
         }
     }
 }

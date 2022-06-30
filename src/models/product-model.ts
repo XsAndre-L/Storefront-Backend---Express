@@ -15,7 +15,7 @@ export class ProductStore {
         // get
         try {
             let sql: string;
-            let params: any;
+            let params: any;    // needs any to be able to be passed to dbConnection
 
             //sql = `SELECT *, (SELECT count(*) as count from order_items group by product_id WHERE product_id = p.id) as popularity from products p`;
             sql = "SELECT * FROM products_table";
@@ -30,9 +30,9 @@ export class ProductStore {
             const result = await dbConnection(sql, params);
 
             return result.rows;
-        } catch (error: any) {
+        } catch (error) {
             throw new Error(
-                `Error while getting all products! ${error.message}`
+                `Error while getting all products! ${(error as Error).message}`
             );
         }
     }
@@ -47,8 +47,10 @@ export class ProductStore {
                 throw new Error(`No item with that id`);
             }
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`Error when retrieving item | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Error when retrieving item | ${(error as Error).message}`
+            );
         }
     }
 
@@ -83,8 +85,10 @@ export class ProductStore {
                 [newProduct.name, newProduct.price, newProduct.category]
             );
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`Error while creating product | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Error while creating product | ${(error as Error).message}`
+            );
         }
     }
 
@@ -117,8 +121,10 @@ export class ProductStore {
                 throw new Error("Item Does Not Exist");
             }
             return result.rows[0];
-        } catch (error: any) {
-            throw new Error(`Error While Removing Item | ${error.message}`);
+        } catch (error) {
+            throw new Error(
+                `Error While Removing Item | ${(error as Error).message}`
+            );
         }
     }
 }

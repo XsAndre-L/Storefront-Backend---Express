@@ -28,8 +28,8 @@ productsRoute
                     sort
                 );
                 res.status(200).json(productList);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -49,8 +49,8 @@ productsRoute
                     product
                 );
                 res.status(200).json(newProduct);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     );
@@ -65,8 +65,8 @@ productsRoute
                     _req.params.id // need to get product id from url
                 );
                 res.status(200).json(product);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -87,8 +87,8 @@ productsRoute
                     pInfo
                 );
                 res.status(200).json(product);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     )
@@ -102,8 +102,8 @@ productsRoute
                     _req.params.id
                 );
                 res.status(200).json(product);
-            } catch (error: any) {
-                res.status(500).send(error.message);
+            } catch (error) {
+                res.status(500).send((error as Error).message);
             }
         }
     );

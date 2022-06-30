@@ -27,7 +27,9 @@ describe("User Endpoint Testing", () => {
 
     it("/user/signup | Create new user missing required fields error", async (): Promise<void> => {
         const response = await st.post("/user/signup");
-        expect(response.text).toEqual('Could not create the new user | Required fields not specified');
+        expect(response.text).toEqual(
+            "Could not create the new user | Required fields not specified"
+        );
     });
     // ---
 });

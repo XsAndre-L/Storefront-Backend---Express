@@ -34,29 +34,26 @@ Backend API: 3000
 ---
 ## Endpoints
 ### User Endpoints
-Create New Account  
-`/user/signup`  
-Authenticate User  
-`/user/login`  
-Show User Details  
-`/user`  
+- Create New Account ( `/user/signup` )   
+- Authenticate User  ( `/user/login` )  
+- Show User Details ( `/user` )  
 
 
 ### Product Endpoints  
-All Products
-`/product`
-`/product/?category=fruit`
-`/product/?sort=popularity`
-`/product/?category=fruit&&sort=popularity`
-Single Product
-`/product/:id`
+#### All Products
+- Get all products ( `/product` )  
+- Get products by category ( `/product/?category=fruit` )  
+- Sort products by popularity ( `/product/?sort=popularity` )  
+- Get products by category and sort by popularity ( `/product/?category=fruit&&sort=popularity` )   
+#### Single Product
+- Get product details ( `/product/:id` ) 
 
 ### Order Endpoints
-`/order`
-`/order/:id`
+- Get all user orders ( `/order` )   
+- Get order details ( `/order/:id` )   
 
 ### Admin Endpoints
-`/admin/`
+- Get all user accounts ( `/admin/users` )   
 
 ---
 
@@ -83,3 +80,7 @@ To run eslint and prettier individualy
 >BCRYPT_PASSWORD=extra_string  
 >HASH_ROUNDS=10  
 >JWT_SIGN_TOKEN=secret_token  
+
+---
+## The Admin User
+Creating a user with the @orginization.com email extention will automatically give the user the administrator role.
