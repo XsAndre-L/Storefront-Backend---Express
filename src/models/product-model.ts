@@ -17,7 +17,6 @@ export class ProductStore {
             let sql: string;
             let params: any;    // needs any to be able to be passed to dbConnection
 
-            //sql = `SELECT *, (SELECT count(*) as count from order_items group by product_id WHERE product_id = p.id) as popularity from products p`;
             sql = "SELECT * FROM products_table";
             if (category) {
                 sql += " WHERE category=$1";
@@ -60,7 +59,7 @@ export class ProductStore {
             // Error handling
             let errorMessage = "";
             if (newProduct.name.length < 1) {
-                // Maybe check for invalid characters used in product name
+                // Maybe check for invalid characters used in product name in the future
                 errorMessage = "Invalid Product Name";
             } else if (newProduct.price < 0) {
                 errorMessage = "Invalid Product Price";
