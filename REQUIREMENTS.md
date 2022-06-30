@@ -6,9 +6,10 @@ Endpoint: `/user/signup`
 Requests: 
 - `[ Post ]`  
 Input: `{  
-    "firstName": "",   
-    "lastName": "",   
-    "password": ""  
+    "email": "",
+    "firstName": "",
+    "lastName": "",
+    "password": ""
 }`  
 Returns: `JWT`
 
@@ -17,8 +18,7 @@ Endpoint: `/user/login`
 Requests: 
 - `[ Post ]`  
 Input: `{  
-    "firstName": "",   
-    "lastName": "",   
+    "email": "",   
     "password": ""  
 }`  
 Returns: `JWT`

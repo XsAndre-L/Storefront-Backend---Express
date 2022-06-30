@@ -25,9 +25,9 @@ describe("User Endpoint Testing", () => {
         expect(response.status).toBe(200);
     });
 
-    it("/user/signup | Create new user", async (): Promise<void> => {
+    it("/user/signup | Create new user missing required fields error", async (): Promise<void> => {
         const response = await st.post("/user/signup");
-        expect(response.status).toBe(200);
+        expect(response.text).toEqual('Could not create the new user | Required fields not specified');
     });
     // ---
 });
@@ -68,6 +68,7 @@ describe("Product endpoints", () => {
     });
 });
 
+// ORDER ENDPOINTS
 describe("Order Endpoints", () => {
     it("/order | Get user orders", async (): Promise<void> => {
         const response = await st.get("/order");
@@ -85,10 +86,11 @@ describe("Order Endpoints", () => {
     });
 });
 
+// CART ENDPOINTS
 describe("Cart Endpoints", () => {
     it("/cart | Get cart contents", async (): Promise<void> => {
         const response = await st.get("/cart");
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(500);
     });
 
     it("/cart | Add to cart", async (): Promise<void> => {
@@ -103,6 +105,6 @@ describe("Cart Endpoints", () => {
 
     it("/cart | Update cart item quantity", async (): Promise<void> => {
         const response = await st.put("/cart");
-        expect(response.status).toBe(200);
+        expect(response.status).toBe(500);
     });
 });

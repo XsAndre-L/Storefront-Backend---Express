@@ -18,6 +18,7 @@ export type User = {
 
 export class UserStore {
 
+    // ADMIN ONLY GET ALL USERS
     async getUsers(): Promise<User[]> {
         try {
 

@@ -1,4 +1,4 @@
-import { dbConnection } from "../database";
+import { dbConnection, verifyUser } from "../database";
 import { OrderStore } from "./order-model";
 
 export class AdminInterface {
@@ -14,6 +14,14 @@ export class AdminInterface {
             return true;
         } else {
             return false;
+        }
+    }
+
+    async verifyAdmin(auth: string) {
+        const user_id = verifyUser(auth);
+        const admin = await this.adminCheck(user_id);
+        if (!admin) {
+            throw new Error("Not Admin");
         }
     }
 }

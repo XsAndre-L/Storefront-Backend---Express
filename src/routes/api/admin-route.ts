@@ -9,19 +9,13 @@ const adminInterface = new AdminInterface();
 
 const userStore = new UserStore();
 
-const verifyAdmin = async (auth: string) => {
-    const user_id = verifyUser(auth);
-    const admin = await adminInterface.adminCheck(user_id);
-    if (!admin) {
-        throw new Error("Not Admin");
-    }
-}
+
 
 adminRoute.route("/").get(
     // GET ADMIN INFO
     async (_req: express.Request, res: express.Response): Promise<void> => {
         try {
-            await verifyAdmin(String(_req.headers.authorization));
+            await adminInterface.verifyAdmin(String(_req.headers.authorization));
 
             // 
 
@@ -36,7 +30,7 @@ adminRoute.route("/users").get(
     // GET LIST OF ALL USERS
     async (_req: express.Request, res: express.Response): Promise<void> => {
         try {
-            await verifyAdmin(String(_req.headers.authorization));
+            await adminInterface.verifyAdmin(String(_req.headers.authorization));
 
             const users = await userStore.getUsers();
 

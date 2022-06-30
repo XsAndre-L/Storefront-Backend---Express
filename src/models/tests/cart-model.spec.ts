@@ -6,21 +6,21 @@ const cartItemStore = new CartItemStore();
 const orderStore = new OrderStore();
 const userStore = new UserStore();
 
-// describe("Testing existance of functions in the Cart model", () => {
+describe("Testing existance of functions in the Cart model", () => {
 
-//     it("Check existance of addCartItem", () => {
-//         expect(orderInfoStore.addCartItem).toBeDefined();
-//     });
+    it("Check existance of addCartItem", () => {
+        expect(cartItemStore.addCartItem).toBeDefined();
+    });
 
-//     it("Check existance of deleteCartItem", () => {
-//         expect(orderInfoStore.deleteCartItem).toBeDefined();
-//     });
+    it("Check existance of deleteCartItem", () => {
+        expect(cartItemStore.deleteCartItem).toBeDefined();
+    });
 
-//     it("Check existance of updateCartItemAmount", () => {
-//         expect(orderInfoStore.updateCartItemAmount).toBeDefined();
-//     });
+    it("Check existance of updateCartItemAmount", () => {
+        expect(cartItemStore.updateCartItemAmount).toBeDefined();
+    });
 
-// });
+});
 
 describe("Cart Model Tests", () => {
     // Add item too cart : Expect Pass
@@ -33,7 +33,7 @@ describe("Cart Model Tests", () => {
                 lastName: "Timothy",
                 password: "randomPassword",
             };
-            userStore.createAccount(testUser);
+            await userStore.createAccount(testUser);
         }
 
         let order_id = await orderStore.getPendingOrder(1);

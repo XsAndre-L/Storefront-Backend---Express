@@ -2,23 +2,23 @@ import { UserStore } from "../user-model";
 
 const userStore = new UserStore();
 
-// describe("Testing existance of functions in the User model", () => {
-//     it("createAccount should exist", () => {
-//         expect(userStore.createAccount).toBeDefined();
-//     });
+describe("Testing existance of functions in the User model", () => {
+    it("createAccount should exist", () => {
+        expect(userStore.createAccount).toBeDefined();
+    });
 
-//     it("authenticateUser should exist", () => {
-//         expect(userStore.authenticateUser).toBeDefined();
-//     });
+    it("authenticateUser should exist", () => {
+        expect(userStore.authenticateUser).toBeDefined();
+    });
 
-//     it("getUserDetails function should exist", () => {
-//         expect(userStore.getUserDetails).toBeDefined();
-//     });
+    it("getUserDetails function should exist", () => {
+        expect(userStore.getUserDetails).toBeDefined();
+    });
 
-//     it("updateUserDetails function should exist", () => {
-//         expect(userStore.updateUserDetails).toBeDefined();
-//     });
-// });
+    it("updateUserDetails function should exist", () => {
+        expect(userStore.updateUserDetails).toBeDefined();
+    });
+});
 
 describe("User Model Tests", () => {
     console.log("Userr Signup Tests");
@@ -64,7 +64,7 @@ describe("User Model Tests", () => {
     });
     // Create valid user
     it("User Signup | Valid Signup", async (): Promise<void> => {
-        testUser.email = "jim34@gmail.com";
+        testUser.email = "NewUser@gmail.com";
         testUser.password = "randomPassword";
         const response = await userStore.createAccount(testUser);
         expect(response).toEqual(jasmine.any(String));

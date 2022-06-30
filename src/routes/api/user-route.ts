@@ -40,7 +40,7 @@ userRoute
                 const result = await userStore.updateUserDetails(user);
                 res.send(result);
             } catch (error: any) {
-                res.send(error.message);
+                res.status(500).send(error.message);
             }
         }
     );
@@ -48,16 +48,16 @@ userRoute
 userRoute.route("/signup").post(
     // CREATE NEW USER
     async (_req: express.Request, res: express.Response): Promise<void> => {
-        try {
-            const newUser: User = {
-                email: _req.body.email,
-                firstName: _req.body.firstName,
-                lastName: _req.body.lastName,
-                password: _req.body.password,
-            };
+        const newUser: User = {
+            email: _req.body.email,
+            firstName: _req.body.firstName,
+            lastName: _req.body.lastName,
+            password: _req.body.password,
+        };
 
+        try {
             const result = await userStore.createAccount(newUser); // Should only be successfull if user does not exist
-            res.json(result);
+            res.status(200).json(result);
         } catch (error: any) {
             res.status(500).send(error.message);
         }
