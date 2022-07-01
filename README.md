@@ -16,14 +16,17 @@ Clone the repository
 In the directory where you cloned the repo execute `npm install`
 
 ### Step 4
+setup .env file
+
+### Step 5
 setup database
 `docker-compose up`
 
-### Step 5
+### Step 6
 run up migrations to create all tables
 `npx db-migrate up`
 
-### Step 6
+### Step 7
 run the project  
 `npm run start`  
 
@@ -54,7 +57,6 @@ Backend API: 3000
 - Create New Account ( `/user/signup` )   
 - Authenticate User  ( `/user/login` )  
 - Show User Details ( `/user` )  
-
 
 ### Product Endpoints  
 #### All Products
