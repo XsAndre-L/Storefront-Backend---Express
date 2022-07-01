@@ -41,7 +41,6 @@ Columns : `id | email | firstName | lastName | password | role`
 ---
 
 ## Product Endpoint
-### All Products
 Endpoint: `/product`       
 ✉️ Requests: 
 - `[Get]`  
@@ -62,7 +61,7 @@ Endpoint: `/product/?sort=popularity`
 - `[Get]`  
     - Returns: `Product[]`
 
-## Product Details Endpoint
+### Product Details Endpoint
 Endpoint: `/product/:id`   
 ✉️ Requests: 
 - `[Get]`   
@@ -85,7 +84,6 @@ Columns : `id | name | price | category | popularity`
 
 ---
 ## Order Endpoint
-### User Orders
 Endpoint: `/order`         
 ✉️ Requests:
 - `[Get]`   ✅Auth  
@@ -107,7 +105,6 @@ Columns : `id SERIAL PRIMARY KEY | user_id FOREIGN KEY | order_status VARCHAR(8)
 
 ---
 ## Cart Endpoint
-### User Cart
 Endpoint: `/cart`  
 ✉️ Requests: 
 - `[Get]`  ✅Auth       
@@ -129,3 +126,10 @@ Endpoint: `/cart`
 ### 📉 OrderInfo Data Shape
 Table Name : `order_info_table`  
 Columns : `id | order_id | product_id | amount`
+
+---
+## Admin Endpoint
+Endpoint: `/admin`  
+✉️ Requests: 
+- `[Get]`  ✅✅Admin Auth       
+    - Returns: `User[]`
