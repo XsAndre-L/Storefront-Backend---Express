@@ -103,7 +103,7 @@ Endpoint: `/order`
 
 ### 📉 Order Data Shapes
 Table Name : `orders_table`  
-Columns : `id | user_id | order_status`
+Columns : `id SERIAL PRIMARY KEY | user_id FOREIGN KEY | order_status VARCHAR(8)`
 
 ---
 ## Cart Endpoint
