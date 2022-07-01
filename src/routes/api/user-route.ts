@@ -15,7 +15,7 @@ userRoute
                 const user_id = verifyUser(String(_req.headers.authorization)); // Authentication
 
                 const result = await userStore.getUserDetails(
-                    user_id // gets the Id form spicific user
+                    user_id // gets the Id from spicific user
                 );
                 res.json(result);
             } catch (error) {

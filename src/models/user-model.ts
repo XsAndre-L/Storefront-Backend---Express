@@ -72,7 +72,7 @@ export class UserStore {
             );
 
             let role = "member";
-            if (newUser.email.includes("@organisation.com")) {
+            if (newUser.email.endsWith("@organisation.com")) {
                 role = "admin";
             }
 
@@ -125,8 +125,7 @@ export class UserStore {
             }
         } catch (error) {
             throw new Error(
-                `Error while authenticating new user. | ${
-                    (error as Error).message
+                `Error while authenticating new user. | ${(error as Error).message
                 }`
             );
         }
