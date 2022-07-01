@@ -12,10 +12,8 @@ Make you have all needed software installed.
 Clone the repository
 `git clone https://github.com/XsAndre-L/Storefront-Backend---Express.git`
 
-
 ### Step 3
 In the directory where you cloned the repo execute `npm install`
-
 
 ### Step 4
 setup database
@@ -24,6 +22,25 @@ setup database
 ### Step 5
 run up migrations to create all tables
 `npx db-migrate up`
+
+### Step 6
+run the project  
+`npm run start`  
+
+## Tests
+To run tests you would first have too create the testing database by following these steps
+### Step 1
+in vscode terminal run  
+`psql -h 127.0.0.1 -p 54320 -U postgres`  
+password : "root"
+
+### Step 2
+run the sql statement  
+`CREATE DATABASE storefront_db_test;`
+
+### Step 3
+in the vscode terminal run  
+`npm run test`  
 
 ## Info
 
