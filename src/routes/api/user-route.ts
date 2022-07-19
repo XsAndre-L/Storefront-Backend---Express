@@ -26,7 +26,6 @@ userRoute
     .put(
         // UPDATE USER DETAILS
         async (_req: express.Request, res: express.Response): Promise<void> => {
-
             try {
                 const user_id = verifyUser(String(_req.headers.authorization));
                 const user: User = {
@@ -76,7 +75,8 @@ userRoute.route("/login").post(
 
         try {
             const result = await userStore.authenticateUser(userDetails);
-            res.status(200).send(result);
+            console.log(result);
+            res.status(200).json(result);
         } catch (error) {
             res.status(500).send((error as Error).message);
         }
