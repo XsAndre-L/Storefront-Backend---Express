@@ -21,7 +21,6 @@ export class UserStore {
     async getUsers(): Promise<User[]> {
         try {
             const result = await dbConnection("SELECT * FROM users_table", []);
-
             return result.rows;
         } catch (error) {
             throw new Error((error as Error).message);

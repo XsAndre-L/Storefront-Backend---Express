@@ -49,7 +49,7 @@ cartRoute
                     _req.body.product_amount
                 );
 
-                res.send("Added item too cart");
+                res.json("Added item too cart");
             } catch (error) {
                 res.status(500).send((error as Error).message);
             }
@@ -74,7 +74,7 @@ cartRoute
                 };
 
                 await orderInfoStore.updateCartItemAmount(cartItem);
-                res.send(`edit quantity of item: ${cartItem.product_id}`);
+                res.json(`edit quantity of item: ${cartItem.product_id}`);
             } catch (error) {
                 res.status(500).send((error as Error).message);
             }
@@ -88,9 +88,9 @@ cartRoute
 
                 await orderInfoStore.deleteCartItem(
                     user_id,
-                    _req.body.product_id
+                    Number(_req.headers.body)
                 );
-                res.send("remove item from cart");
+                res.json("remove item from cart");
             } catch (error) {
                 res.status(500).send((error as Error).message);
             }
