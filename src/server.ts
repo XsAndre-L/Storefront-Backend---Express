@@ -21,7 +21,7 @@ app.use("/", mainRoute);
 
 app.listen(port, () => {
     console.log(`Started server on port: ${port}`);
-    console.log(process.env);
+    console.log(process.env.POSTGRES_HOST);
 });
 
 export default app;
