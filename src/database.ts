@@ -1,8 +1,16 @@
+import { exec } from "child_process";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { Pool, QueryResult } from "pg";
 
 dotenv.config();
+
+exec(
+    "/opt/elasticbeanstalk/bin/get-config --output YAML environment",
+    (error, stdout, stderr) => {
+        console.log(error, stdout, stderr);
+    }
+);
 
 const {
     POSTGRES_HOST,
