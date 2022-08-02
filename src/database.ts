@@ -1,8 +1,8 @@
-// import dotenv from "dotenv";
+import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { Pool, QueryResult } from "pg";
 
-// dotenv.config();
+dotenv.config();
 
 const {
     POSTGRES_HOST,
