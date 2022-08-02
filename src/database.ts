@@ -4,25 +4,27 @@ import jwt from "jsonwebtoken";
 import { Pool, QueryResult } from "pg";
 
 dotenv.config();
+let envOBJ: any = {};
 
 exec(
-    "/opt/elasticbeanstalk/bin/get-config --output YAML environment",
+    "/opt/elasticbeanstalk/bin/get-config --output JSON environment",
     (error, stdout, stderr) => {
         console.log(error, stdout, stderr);
+        envOBJ = stdout;
     }
 );
 
 const {
-    POSTGRES_HOST,
-    POSTGRES_PORT,
-    POSTGRES_DB,
-    POSTGRES_DB_TEST,
-    POSTGRES_USER,
-    POSTGRES_PASSWORD,
+    POSTGRES_HOST = envOBJ.POSTGRES_HOST,
+    POSTGRES_PORT = envOBJ.POSTGRES_PORT,
+    POSTGRES_DB = envOBJ.POSTGRES_DB,
+    POSTGRES_DB_TEST = envOBJ.POSTGRES_DB_TEST,
+    POSTGRES_USER = envOBJ.POSTGRES_USER,
+    POSTGRES_PASSWORD = envOBJ.POSTGRES_PASSWORD,
 
-    ENV,
+    ENV = envOBJ.ENV,
 
-    JWT_SIGN_TOKEN,
+    JWT_SIGN_TOKEN = envOBJ.JWT_SIGN_TOKEN,
 } = process.env;
 
 let database: Pool;
