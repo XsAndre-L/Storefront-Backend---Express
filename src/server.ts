@@ -21,6 +21,7 @@ app.use("/", mainRoute);
 
 app.listen(port, () => {
     console.log(`Started server on port: ${port}`);
+    console.log(`${process.env}`);
 });
 
 export default app;
