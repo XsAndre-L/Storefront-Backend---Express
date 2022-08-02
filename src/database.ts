@@ -1,8 +1,8 @@
-import dotenv from "dotenv";
+// import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import { Pool, QueryResult } from "pg";
 
-dotenv.config();
+// dotenv.config();
 
 const {
     POSTGRES_HOST,
@@ -40,8 +40,9 @@ if (ENV === "dev") {
 // FUNCTION TO CONNECT, QUERY AND DISCONNECT DATABASE
 export const dbConnection = async (
     sql: string,
-    sqlInput: any   // the use of any is required in this case to be able to handle any data type.
-): Promise<QueryResult<any>> => {   // QueryResult<any> is the type returned by the database
+    sqlInput: any // the use of any is required in this case to be able to handle any data type.
+): Promise<QueryResult<any>> => {
+    // QueryResult<any> is the type returned by the database
     const conn = await database.connect();
     const result = await conn.query(sql, sqlInput);
     conn.release();
