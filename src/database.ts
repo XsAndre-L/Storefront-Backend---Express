@@ -31,11 +31,11 @@ let database: Pool;
 
 if (ENV === "dev") {
     database = new Pool({
-        host: POSTGRES_HOST,
-        port: parseInt(String(POSTGRES_PORT)),
-        database: POSTGRES_DB,
-        user: POSTGRES_USER,
-        password: POSTGRES_PASSWORD,
+        host: envOBJ.POSTGRES_HOST,
+        port: parseInt(String(envOBJ.POSTGRES_PORT)),
+        database: envOBJ.POSTGRES_DB,
+        user: envOBJ.POSTGRES_USER,
+        password: envOBJ.POSTGRES_PASSWORD,
     });
 } else {
     database = new Pool({
