@@ -2,7 +2,7 @@
     "dev": {
         "driver": "pg",
         "host": "database-1.crlmvq6swqhz.us-east-1.rds.amazonaws.com",
-        "port": "5432",
+        "port": "54320",
         "database": "storefront_db",
         "user": "postgres",
         "password": "postgres"
