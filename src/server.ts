@@ -3,7 +3,7 @@ import express from "express";
 import mainRoute from "./routes/index-route";
 
 const app = express();
-const port = 3000;
+const port = 8080;
 
 const corsOptions = {
     origin: "http://localhost:4200",
