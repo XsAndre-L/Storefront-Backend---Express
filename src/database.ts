@@ -1,4 +1,4 @@
-import { exec } from "child_process";
+// import { exec } from "child_process";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 
@@ -95,47 +95,47 @@ import { Pool, QueryResult } from "pg";
 // }
 
 dotenv.config();
-let envOBJ: any = {};
+// let envOBJ: any = {};
 let database: Pool;
 
-exec(
-    "/opt/elasticbeanstalk/bin/get-config --output JSON environment",
-    (error, stdout, stderr) => {
-        console.log("--- CORRECT DATA ---");
-        console.log(error, stdout, stderr);
-        envOBJ = stdout;
-    }
-);
+// exec(
+//     "/opt/elasticbeanstalk/bin/get-config --output JSON environment",
+//     (error, stdout, stderr) => {
+//         console.log("--- CORRECT DATA ---");
+//         console.log(error, stdout, stderr);
+//         envOBJ = stdout;
+//     }
+// );
 
-// const {
-//     POSTGRES_HOST,
-//     POSTGRES_PORT,
-//     POSTGRES_DB,
-//     POSTGRES_DB_TEST,
-//     POSTGRES_USER,
-//     POSTGRES_PASSWORD,
+const {
+    POSTGRES_HOST,
+    POSTGRES_PORT,
+    POSTGRES_DB,
+    POSTGRES_DB_TEST,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
 
-//     ENV,
+    ENV,
 
-//     JWT_SIGN_TOKEN,
-// } = process.env;
+    JWT_SIGN_TOKEN,
+} = process.env;
 
-console.log(envOBJ.POSTGRES_HOST);
-if (envOBJ.ENV === "dev") {
+console.log(POSTGRES_HOST);
+if (ENV === "dev") {
     database = new Pool({
-        host: envOBJ.POSTGRES_HOST,
-        port: parseInt(String(envOBJ.POSTGRES_PORT)),
-        database: envOBJ.POSTGRES_DB,
-        user: envOBJ.POSTGRES_USER,
-        password: envOBJ.POSTGRES_PASSWORD,
+        host: POSTGRES_HOST,
+        port: parseInt(String(POSTGRES_PORT)),
+        database: POSTGRES_DB,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
     });
 } else {
     database = new Pool({
-        host: envOBJ.POSTGRES_HOST,
-        port: parseInt(String(envOBJ.POSTGRES_PORT)),
-        database: envOBJ.POSTGRES_DB_TEST,
-        user: envOBJ.POSTGRES_USER,
-        password: envOBJ.POSTGRES_PASSWORD,
+        host: POSTGRES_HOST,
+        port: parseInt(String(POSTGRES_PORT)),
+        database: POSTGRES_DB_TEST,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
     });
 }
 
@@ -156,10 +156,7 @@ export const dbConnection = async (
 // Returns user_id
 export const verifyUser = (auth: string | null): number => {
     try {
-        const verification = jwt.verify(
-            String(auth),
-            String(envOBJ.JWT_SIGN_TOKEN)
-        );
+        const verification = jwt.verify(String(auth), String(JWT_SIGN_TOKEN));
         return Object.values(verification)[0];
     } catch (error) {
         throw new Error(`Authentication Error`);
