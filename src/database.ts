@@ -31,7 +31,7 @@ let database: Pool;
 console.log(envOBJ.POSTGRES_HOST);
 if (ENV === "dev") {
     database = new Pool({
-        host: POSTGRES_HOST,
+        host: envOBJ.POSTGRES_HOST,
         port: parseInt(String(POSTGRES_PORT)),
         database: POSTGRES_DB,
         user: POSTGRES_USER,
