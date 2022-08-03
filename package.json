@@ -13,7 +13,8 @@
         "prettier": "prettier --config .prettierrc src/**/*.ts --write",
         "lint": "eslint . --ext .ts",
         "check": "npm run lint && npm run prettier",
-        "gitDone": "git add --all && git commit -m 'auto' && git push"
+        "gitAuto": "git add --all && git commit -m 'auto' && git push",
+        "deploy": "eb deploy --profile default"
     },
     "repository": {
         "type": "git",
