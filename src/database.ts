@@ -15,27 +15,27 @@ exec(
 );
 
 const {
-    POSTGRES_HOST = envOBJ.POSTGRES_HOST,
-    POSTGRES_PORT = envOBJ.POSTGRES_PORT,
-    POSTGRES_DB = envOBJ.POSTGRES_DB,
-    POSTGRES_DB_TEST = envOBJ.POSTGRES_DB_TEST,
-    POSTGRES_USER = envOBJ.POSTGRES_USER,
-    POSTGRES_PASSWORD = envOBJ.POSTGRES_PASSWORD,
+    POSTGRES_HOST,
+    POSTGRES_PORT,
+    POSTGRES_DB,
+    POSTGRES_DB_TEST,
+    POSTGRES_USER,
+    POSTGRES_PASSWORD,
 
-    ENV = envOBJ.ENV,
+    ENV,
 
-    JWT_SIGN_TOKEN = envOBJ.JWT_SIGN_TOKEN,
+    JWT_SIGN_TOKEN,
 } = process.env;
 
 let database: Pool;
 
 if (ENV === "dev") {
     database = new Pool({
-        host: envOBJ.POSTGRES_HOST,
-        port: parseInt(String(envOBJ.POSTGRES_PORT)),
-        database: envOBJ.POSTGRES_DB,
-        user: envOBJ.POSTGRES_USER,
-        password: envOBJ.POSTGRES_PASSWORD,
+        host: POSTGRES_HOST,
+        port: parseInt(String(POSTGRES_PORT)),
+        database: POSTGRES_DB,
+        user: POSTGRES_USER,
+        password: POSTGRES_PASSWORD,
     });
 } else {
     database = new Pool({
