@@ -95,18 +95,18 @@ import { Pool, QueryResult } from "pg";
 // }
 
 dotenv.config();
-let envOBJ: any = {};
+// let envOBJ: any = {};
 let database: Pool;
 
-exec(
-    "/opt/elasticbeanstalk/bin/get-config --output JSON environment",
-    (error, stdout, stderr) => {
-        console.log("--- CORRECT DATA ---");
-        console.log(error, stdout, stderr);
-        envOBJ = stdout;
-    }
-);
-
+// exec(
+//     "/opt/elasticbeanstalk/bin/get-config --output JSON environment",
+//     (error, stdout, stderr) => {
+//         console.log("--- CORRECT DATA ---");
+//         console.log(error, stdout, stderr);
+//         envOBJ = stdout;
+//     }
+// );
+console.log(process.env);
 const {
     POSTGRES_HOST,
     POSTGRES_PORT,
