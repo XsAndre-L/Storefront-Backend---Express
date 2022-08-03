@@ -28,7 +28,7 @@ const {
 } = process.env;
 
 let database: Pool;
-
+console.log(envOBJ.POSTGRES_HOST);
 if (ENV === "dev") {
     database = new Pool({
         host: POSTGRES_HOST,
@@ -39,7 +39,7 @@ if (ENV === "dev") {
     });
 } else {
     database = new Pool({
-        host: POSTGRES_HOST,
+        host: envOBJ.POSTGRES_HOST,
         port: parseInt(String(POSTGRES_PORT)),
         database: POSTGRES_DB_TEST,
         user: POSTGRES_USER,
