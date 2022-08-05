@@ -9,7 +9,8 @@
     "scripts": {
         "test": "set ENV=test && db-migrate up --env=test && npm run build && jasmine && db-migrate down -c 100 --env=test ",
         "build": "npx tsc",
-        "start": "npx nodemon ./src/server.ts",
+        "start": "node build/server.js",
+        "startDev": "npx nodemon ./src/server.ts",
         "prettier": "prettier --config .prettierrc src/**/*.ts --write",
         "lint": "eslint . --ext .ts",
         "check": "npm run lint && npm run prettier",
