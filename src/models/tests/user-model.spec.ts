@@ -84,7 +84,7 @@ describe("User Model Tests", () => {
     // Valid User Authentication
     it("User Login | Authenticate valid user", async (): Promise<void> => {
         const response = await userStore.authenticateUser({
-            email: "jim34@gmail.com",
+            email: "NewUser@gmail.com",
             firstName: "NA",
             lastName: "NA",
             password: "randomPassword",
