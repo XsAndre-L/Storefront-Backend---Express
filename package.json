@@ -7,7 +7,7 @@
     },
     "main": "index.js",
     "scripts": {
-        "test": "set ENV=test && db-migrate reset && db-migrate up --env=test && npm run build && jasmine && db-migrate down -c 100 --env=test ",
+        "test": "set ENV=test && db-migrate up --env=test && npm run build && jasmine && db-migrate down -c 100 --env=test ",
         "build": "npx tsc",
         "start": "node build/server.js",
         "startDev": "npx nodemon ./src/server.ts",
