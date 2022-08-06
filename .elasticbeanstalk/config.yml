@@ -1,0 +1,19 @@
+branch-defaults:
+  main:
+    environment: storefront-backend---express-dev
+environment-defaults:
+  storefront-backend---express-dev:
+    branch: null
+    repository: null
+global:
+  application_name: storefront-backend---express
+  default_ec2_keyname: vockey
+  default_platform: Node.js 16 running on 64bit Amazon Linux 2
+  default_region: us-east-1
+  include_git_submodules: true
+  instance_profile: null
+  platform_name: null
+  platform_version: null
+  profile: eb-cli
+  sc: git
+  workspace_type: Application
