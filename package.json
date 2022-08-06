@@ -15,7 +15,7 @@
         "lint": "eslint . --ext .ts",
         "check": "npm run lint && npm run prettier",
         "gitAuto": "git add --all && git commit -m 'auto' && git push",
-        "deploy": "eb deploy --profile default"
+        "deploy": "eb deploy"
     },
     "repository": {
         "type": "git",
