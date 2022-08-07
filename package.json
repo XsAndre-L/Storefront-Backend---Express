@@ -15,7 +15,7 @@
         "lint": "eslint . --ext .ts",
         "check": "npm run lint && npm run prettier",
         "gitAuto": "git add --all && git commit -m 'auto' && git push",
-        "deploy": "ls -al && chmod +x ./cmd/deploy.sh && bash ./cmd/deploy.sh && eb deploy storefront-backend---express-dev"
+        "deploy": "ls -al && chmod +x ./cmd/deploy.sh && bash ./cmd/deploy.sh && eb deploy"
     },
     "repository": {
         "type": "git",
