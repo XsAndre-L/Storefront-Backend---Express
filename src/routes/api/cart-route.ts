@@ -21,9 +21,9 @@ cartRoute
                     const orderProducts = await orderStore.getOrderProducts(
                         order_id
                     );
-                    res.send(orderProducts);
+                    res.json(orderProducts);
                 } else {
-                    res.send("No cart order exist");
+                    res.json("No cart order exist");
                 }
             } catch (error) {
                 res.status(500).send((error as Error).message);

@@ -16,8 +16,7 @@ adminRoute.route("/").get(
                 String(_req.headers.authorization)
             );
 
-            res.send("In Admin Route");
-
+            res.json("In Admin Route");
         } catch (error) {
             res.send(
                 "Error while getting admin info | " + (error as Error).message
